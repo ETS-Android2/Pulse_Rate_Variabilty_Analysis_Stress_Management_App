@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_measure">
+
+    <fragment
+        android:id="@+id/navigation_measure"
+        android:name="com.example.stressmanagementapp.ui.home.HomeFragment"
+        android:label="@string/title_measure"
+        tools:layout="@layout/fragment_measure" />
+
+    <fragment
+        android:id="@+id/navigation_monitoring"
+        android:name="com.example.stressmanagementapp.ui.dashboard.DashboardFragment"
+        android:label="@string/title_monitoring"
+        tools:layout="@layout/fragment_statistic" />
+
+    <fragment
+        android:id="@+id/navigation_statistic"
+        android:name="com.example.stressmanagementapp.ui.notifications.NotificationsFragment"
+        android:label="@string/title_statistic"
+        tools:layout="@layout/fragment_monitoring" />
+    <fragment
+        android:id="@+id/navigation_setting"
+        android:name="com.example.stressmanagementapp.ui.notifications.NotificationsFragment"
+        android:label="@string/title_setting"
+        tools:layout="@layout/fragment_monitoring" />
+</navigation>

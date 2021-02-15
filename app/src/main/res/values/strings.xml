@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Stress Management App</string>
+    <string name="title_measure">Measure</string>
+    <string name="title_monitoring">Monitoring</string>
+    <string name="title_statistic">Statistic</string>
+    <string name="title_setting">Setting</string>
+</resources>
