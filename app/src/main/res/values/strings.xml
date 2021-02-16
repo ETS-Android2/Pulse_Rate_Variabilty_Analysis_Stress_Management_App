@@ -4,4 +4,19 @@
     <string name="title_monitoring">Monitoring</string>
     <string name="title_statistic">Statistic</string>
     <string name="title_setting">Setting</string>
+
+    <string name="info_no_pairing_record">You haven’t pairing with other yet</string>
+
+    <string name="realtime_measure_card_instantBPM_title">Instant BPM:</string>
+    <string name="realtime_measure_card_highestBPM_title">Highest BPM:</string>
+    <string name="realtime_measure_card_lowestBPM_title">Lowest BPM:</string>
+
+    <string name="realtime_measure_card_instantStressLevel_title">Instant Stress Level:</string>
+    <string name="realtime_measure_card_highestStressLevel_title">Highest Stress Level:</string>
+    <string name="realtime_measure_card_lowestStressLevel_title">Lowest Stress Level:</string>
+
+    <string name="realtime_measure_card_instantFatigueLevel_title">Instant Fatigue Level:</string>
+    <string name="realtime_measure_card_highestFatigueLevel_title">Highest Fatigue Level:</string>
+    <string name="realtime_measure_card_lowestFatigueLevel_title">Lowest Fatigue Level:</string>
+
 </resources>
