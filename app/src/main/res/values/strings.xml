@@ -24,6 +24,8 @@
     <string name="realtime_measure_card_instantFatigueLevel_title">Instant Fatigue Level:</string>
     <string name="realtime_measure_card_highestFatigueLevel_title">Highest Fatigue Level:</string>
     <string name="realtime_measure_card_lowestFatigueLevel_title">Lowest Fatigue Level:</string>
+
+    <string name="realtime_measure_loading_label">Loading ...</string>
     <!--   end realtime measuring page-->
 
     <!--   start schedule realtime measuring page-->
