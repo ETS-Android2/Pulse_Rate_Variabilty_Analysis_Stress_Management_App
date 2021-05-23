@@ -35,7 +35,7 @@
                 android:src="@drawable/btn_schedulemeasurement" />
 
             <ImageButton
-                android:id="@+id/scheduleMeasurmentBtn2"
+                android:id="@+id/viewScheduledMeasurmentBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

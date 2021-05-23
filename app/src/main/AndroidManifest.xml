@@ -18,8 +18,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MeasuringActivity"/>
-
+        <activity android:name=".MeasuringActivity"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".ScheduleActivity"
+            android:parentActivityName=".MainActivity"/>
+        <activity android:name=".ViewScheduledMeasureActivity"
+            android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>

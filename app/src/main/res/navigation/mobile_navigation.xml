@@ -15,16 +15,16 @@
         android:id="@+id/navigation_monitoring"
         android:name="com.example.stressmanagementapp.ui.monitoring.MonitoringFragment"
         android:label="@string/title_monitoring"
-        tools:layout="@layout/fragment_statistic" />
+        tools:layout="@layout/fragment_monitoring_norecord" />
 
     <fragment
         android:id="@+id/navigation_statistic"
         android:name="com.example.stressmanagementapp.ui.statistic.StatisticFragment"
         android:label="@string/title_statistic"
-        tools:layout="@layout/fragment_monitoring_norecord" />
+        tools:layout="@layout/fragment_statistic" />
     <fragment
         android:id="@+id/navigation_setting"
         android:name="com.example.stressmanagementapp.ui.setting.SettingFragment"
         android:label="@string/title_setting"
-        tools:layout="@layout/fragment_monitoring_norecord" />
+        tools:layout="@layout/fragment_setting" />
 </navigation>

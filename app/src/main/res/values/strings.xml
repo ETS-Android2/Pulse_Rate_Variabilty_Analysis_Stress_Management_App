@@ -7,6 +7,12 @@
 
     <string name="info_no_pairing_record">You haven’t pairing with other yet</string>
 
+
+    <!--   start realtime measuring page-->
+    <string name="btn_start_measure_label">Start</string>
+    <string name="btn_pause_measure_label">Pause</string>
+    <string name="btn_stop_measure_label">Stop</string>
+
     <string name="realtime_measure_card_instantBPM_title">Instant BPM:</string>
     <string name="realtime_measure_card_highestBPM_title">Highest BPM:</string>
     <string name="realtime_measure_card_lowestBPM_title">Lowest BPM:</string>
@@ -18,5 +24,27 @@
     <string name="realtime_measure_card_instantFatigueLevel_title">Instant Fatigue Level:</string>
     <string name="realtime_measure_card_highestFatigueLevel_title">Highest Fatigue Level:</string>
     <string name="realtime_measure_card_lowestFatigueLevel_title">Lowest Fatigue Level:</string>
+    <!--   end realtime measuring page-->
+
+    <!--   start schedule realtime measuring page-->
+    <string name="inputEventNameHint">Event Name</string>
+    <string name="inputLocationHint">Location</string>
+    <string name="fromDateLabel">Start</string>
+    <string name="endDateLabel">End</string>
+    <string name="addScheduleBtnLabel">Save</string>
+    <string name="resetScheduleBtnLabel">Clear</string>
+    <string-array name="activity_category_array">
+        <item>Category</item>
+        <item>Sport</item>
+        <item>Entertainment</item>
+        <item>Study</item>
+        <item>Working</item>
+    </string-array>
+
+    <!--   end schedule realtime measuring page-->
+
+
+
+
 
 </resources>

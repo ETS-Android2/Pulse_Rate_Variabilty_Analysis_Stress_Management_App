@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent=".3"
+        app:layout_constraintHeight_percent="0.3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints">
@@ -25,21 +25,56 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout_StartStop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.7"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="@id/lineChartLayout"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lineChartLayout">
+        app:layout_constraintTop_toBottomOf="@+id/lineChartLayout"
+        app:layout_constraintVertical_bias="0.013">
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:background="#FFFFFF"
+            android:text="@string/btn_stop_measure_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/button"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:background="#019AE8"
+            android:text="@string/btn_start_measure_label"
+            app:layout_constraintEnd_toStartOf="@+id/button2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.5"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraintLayout_StartStop">
+
 
         <androidx.cardview.widget.CardView
             android:id="@+id/BPMLevelCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
             app:cardCornerRadius="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -56,7 +91,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="32dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:text="@string/realtime_measure_card_instantBPM_title"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -65,7 +100,7 @@
                     android:id="@+id/measureBPMTitle2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:text="@string/realtime_measure_card_highestBPM_title"
                     app:layout_constraintStart_toStartOf="@+id/measureBPMTitle1"
                     app:layout_constraintTop_toBottomOf="@+id/measureBPMTitle1" />
@@ -74,8 +109,8 @@
                     android:id="@+id/measureBPMTitle3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:text="@string/realtime_measure_card_lowestBPM_title"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/measureBPMTitle2"
@@ -89,28 +124,25 @@
             android:id="@+id/stressLevelCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
             android:background="#FFFFFF"
             app:cardCornerRadius="2dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/BPMLevelCard"
-            app:layout_constraintTop_toBottomOf="@+id/BPMLevelCard">
+            app:layout_constraintTop_toBottomOf="@id/BPMLevelCard"
+            tools:layout_editor_absoluteX="16dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cardViewContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#FFFF00">
+                android:background="#8FB193">
 
                 <TextView
                     android:id="@+id/measureStressTitle1"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="32dp"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/realtime_measure_card_instantBPM_title"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/realtime_measure_card_instantStressLevel_title"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -118,8 +150,8 @@
                     android:id="@+id/measureStressTitle2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/realtime_measure_card_highestBPM_title"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/realtime_measure_card_highestStressLevel_title"
                     app:layout_constraintStart_toStartOf="@+id/measureStressTitle1"
                     app:layout_constraintTop_toBottomOf="@+id/measureStressTitle1" />
 
@@ -127,8 +159,8 @@
                     android:id="@+id/measureStreeTitle3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:text="@string/realtime_measure_card_lowestStressLevel_title"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/measureStressTitle2"
@@ -141,14 +173,11 @@
             android:id="@+id/fatigueLevelCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
             android:background="#FFFFFF"
             app:cardCornerRadius="2dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/stressLevelCard"
-            app:layout_constraintTop_toBottomOf="@+id/stressLevelCard">
+            app:layout_constraintTop_toBottomOf="@id/stressLevelCard"
+            tools:layout_editor_absoluteX="16dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cardViewContainer3"
@@ -161,7 +190,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="32dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:text="@string/realtime_measure_card_instantFatigueLevel_title"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -170,7 +199,7 @@
                     android:id="@+id/measureFatigueTitle2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:text="@string/realtime_measure_card_highestFatigueLevel_title"
                     app:layout_constraintStart_toStartOf="@+id/measureFatigueTitle1"
                     app:layout_constraintTop_toBottomOf="@+id/measureFatigueTitle1" />
@@ -179,8 +208,8 @@
                     android:id="@+id/measureFatigueTitle3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:text="@string/realtime_measure_card_lowestFatigueLevel_title"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/measureFatigueTitle2"
