@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -12,14 +13,19 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.stressmanagementapp.Dialog.LoadingDialog;
 import com.example.stressmanagementapp.LineChart.AbstractCustomLineChart;
+import com.example.stressmanagementapp.Model.PPG_Model;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.DoubleBounce;
 
 import org.reactivestreams.Publisher;
 
+import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Function;
@@ -43,8 +49,10 @@ public class MeasuringActivity extends AppCompatActivity {
     private Disposable broadcastDisposable;
     private Disposable ppgDisposable;
     private Disposable autoConnectDisposable;
-    private ProgressBar spinner;
     private Button startMeasureBtn, stopMeasureBtn;
+    private final LoadingDialog loadingDialog = new LoadingDialog(MeasuringActivity.this);
+    private boolean receiveFirstPPG;
+    private int ppgIndex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,25 +69,20 @@ public class MeasuringActivity extends AppCompatActivity {
 
         startMeasureBtn = findViewById(R.id.startMeasureBtn);
         stopMeasureBtn = findViewById(R.id.stopMeasureBtn);
+        setupSensorApi();
         setupBtnListener();
 
-        spinner=(ProgressBar)findViewById(R.id.progressBar);
-        spinner.setVisibility(View.GONE);
-
-
     }
-    private void enableLoadingProgressBar(){
 
-    }
     private void setupBtnListener() {
         this.startMeasureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try{
-                    setupSensorApi();
+                try {
+                    loadingDialog.startLoadingDialog();
                     autoConnectSensor();
-                    subscribePPG();
-                }catch (Exception ex){
+                } catch (Exception ex) {
+                    loadingDialog.dismissDialog();
                     ex.printStackTrace();
                 }
             }
@@ -87,14 +90,15 @@ public class MeasuringActivity extends AppCompatActivity {
         this.stopMeasureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try{
+                try {
                     try {
+                        loadingDialog.startLoadingDialog();
                         api.disconnectFromDevice(DEVICE_ID);
-                        setupSensorApi();
                     } catch (PolarInvalidArgument polarInvalidArgument) {
+                        loadingDialog.dismissDialog();
                         polarInvalidArgument.printStackTrace();
                     }
-                }catch (Exception ex){
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
@@ -135,6 +139,7 @@ public class MeasuringActivity extends AppCompatActivity {
             public void deviceDisconnected(@NonNull PolarDeviceInfo polarDeviceInfo) {
                 Log.d(TAG, "DISCONNECTED: " + polarDeviceInfo.deviceId);
                 ppgDisposable = null;
+                loadingDialog.dismissDialog();
             }
 
             @Override
@@ -153,6 +158,7 @@ public class MeasuringActivity extends AppCompatActivity {
             public void ppgFeatureReady(@NonNull String identifier) {
                 Log.d(TAG, "PPG READY: " + identifier);
                 // ohr ppg can be started
+                subscribePPG();
             }
 
             @Override
@@ -188,25 +194,37 @@ public class MeasuringActivity extends AppCompatActivity {
     }
 
     private void autoConnectSensor() {
+
         if (autoConnectDisposable != null) {
             autoConnectDisposable.dispose();
             autoConnectDisposable = null;
         }
         autoConnectDisposable = api.autoConnectToDevice(-50, "180D", null).subscribe(
-                () -> Log.d(TAG, "auto connect search complete"),
+                () -> {
+                    Log.d(TAG, "auto connect search complete");
+                    autoConnectDisposable.dispose();
+                    autoConnectDisposable = null;
+                },
                 throwable -> Log.e(TAG, "" + throwable.toString())
         );
     }
-    private void subscribePPG(){
-        if(ppgDisposable == null) {
-            ppgDisposable = api.requestPpgSettings(DEVICE_ID).toFlowable().flatMap((Function<PolarSensorSetting, Publisher<PolarOhrPPGData>>) polarPPGSettings -> api.startOhrPPGStreaming(DEVICE_ID,polarPPGSettings.maxSettings())).subscribe(
+
+    private void subscribePPG() {
+        if (ppgDisposable == null) {
+            ppgIndex=0;
+            receiveFirstPPG=false;
+            ppgDisposable = api.requestPpgSettings(DEVICE_ID).toFlowable().flatMap((Function<PolarSensorSetting, Publisher<PolarOhrPPGData>>) polarPPGSettings -> api.startOhrPPGStreaming(DEVICE_ID, polarPPGSettings.maxSettings())).subscribe(
                     polarOhrPPGData -> {
-                        for( PolarOhrPPGData.PolarOhrPPGSample data : polarOhrPPGData.samples ){
-                            Log.d(TAG,"    ppg0: " + data.ppg0 + " ppg1: " + data.ppg1 + " ppg2: " + data.ppg2 + " ambient: " + data.ambient);
+                        for (PolarOhrPPGData.PolarOhrPPGSample data : polarOhrPPGData.samples) {
+                            Log.d(TAG, "    ppg0: " + data.ppg0 + " ppg1: " + data.ppg1 + " ppg2: " + data.ppg2 + " ambient: " + data.ambient);
+                            PPG_Model ppg_model = new PPG_Model(data,ppgIndex++,new Date());
+                            receiveFirstPPG=true;
                         }
+                        if(receiveFirstPPG==true && loadingDialog.getLoadingDialog().isShowing()==true)
+                            loadingDialog.dismissDialog();
                     },
-                    throwable -> Log.e(TAG,""+throwable.getLocalizedMessage()),
-                    () -> Log.d(TAG,"complete")
+                    throwable -> Log.e(TAG, "" + throwable.getLocalizedMessage()),
+                    () -> Log.d(TAG, "complete")
             );
         } else {
             ppgDisposable.dispose();

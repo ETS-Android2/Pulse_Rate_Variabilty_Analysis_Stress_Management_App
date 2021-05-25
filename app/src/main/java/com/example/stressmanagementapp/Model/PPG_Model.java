@@ -1,19 +1,23 @@
 package com.example.stressmanagementapp.Model;
 
+import java.util.Date;
+
+import polar.com.sdk.api.model.PolarOhrPPGData;
+
 public class PPG_Model implements Model {
     private int ppg_index;
     private float ppg0, ppg1, ppg2;
     private float min, median, max;
-    private float ambient;
+    private float ambient,ambient2;
     private float diff_MaxMed, diff_MedMin;
-    private String logDateTime;
+    private Date logDateTime;
 
-    public PPG_Model(int ppg_index, float ppg0, float ppg1, float ppg2, float ambient, String logDateTime) {
-        this.ppg_index = ppg_index;
+    public PPG_Model(PolarOhrPPGData.PolarOhrPPGSample ppgSample, int sampleIndex, Date logDate) {
+        this.ppg_index = sampleIndex;
 
-        this.ppg0 = ppg0;
-        this.ppg1 = ppg1;
-        this.ppg2 = ppg2;
+        this.ppg0 = ppgSample.ppg0;
+        this.ppg1 = ppgSample.ppg1;
+        this.ppg2 = ppgSample.ppg2;
 
         this.min = calMin();
         this.median = calMedian();
@@ -21,9 +25,10 @@ public class PPG_Model implements Model {
 
         this.diff_MaxMed = calDiffMaxMed();
         this.diff_MedMin = calDiffMedMin();
-        this.ambient = ambient;
+        this.ambient = ppgSample.ambient;
+        this.ambient2 = ppgSample.ambient2;
 
-        this.logDateTime = logDateTime;
+        this.logDateTime = logDate;
     }
     private float calDiffMaxMed() {
         return max-median;
@@ -129,11 +134,11 @@ public class PPG_Model implements Model {
         this.diff_MedMin = diff_MedMin;
     }
 
-    public String getLogDateTime() {
+    public Date getLogDateTime() {
         return logDateTime;
     }
 
-    public void setLogDateTime(String logDateTime) {
+    public void setLogDateTime(Date logDateTime) {
         this.logDateTime = logDateTime;
     }
 
