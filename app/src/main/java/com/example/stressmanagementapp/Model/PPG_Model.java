@@ -1,5 +1,13 @@
 package com.example.stressmanagementapp.Model;
 
+import android.util.Log;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.Date;
 
 import polar.com.sdk.api.model.PolarOhrPPGData;
@@ -157,5 +165,19 @@ public class PPG_Model implements Model {
                 ", diff_MedMin=" + diff_MedMin +
                 ", logDateTime='" + logDateTime + '\'' +
                 '}';
+    }
+
+    public JSONObject toJsonObject(){
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString = null;
+        try {
+            jsonString = mapper.writeValueAsString(this);
+            JSONObject obj = new JSONObject(jsonString);
+            return obj;
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 }

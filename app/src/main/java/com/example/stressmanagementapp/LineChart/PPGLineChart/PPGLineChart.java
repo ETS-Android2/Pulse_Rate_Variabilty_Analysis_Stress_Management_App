@@ -23,7 +23,7 @@ public class PPGLineChart extends AbstractCustomLineChart {
         super(chart);
         this.chart=chart;
         // enable description text
-        chart.getDescription().setEnabled(true);
+        chart.getDescription().setEnabled(false);
 
         // enable touch gestures
         chart.setTouchEnabled(true);
@@ -38,10 +38,10 @@ public class PPGLineChart extends AbstractCustomLineChart {
         chart.setPinchZoom(true);
 
         // set an alternative background color
-        chart.setBackgroundColor(Color.LTGRAY);
+        chart.setBackgroundColor(Color.BLACK);
 
         LineData data = new LineData();
-        data.setValueTextColor(Color.WHITE);
+        data.setValueTextColor(Color.RED);
 
         // add empty data
         chart.setData(data);
@@ -52,7 +52,7 @@ public class PPGLineChart extends AbstractCustomLineChart {
         // modify the legend ...
         l.setForm(Legend.LegendForm.LINE);
         l.setTypeface(tfLight);
-        l.setTextColor(Color.WHITE);
+        l.setTextColor(Color.RED);
 
         XAxis xl = chart.getXAxis();
         xl.setTypeface(tfLight);
@@ -75,32 +75,32 @@ public class PPGLineChart extends AbstractCustomLineChart {
         PPG_Model inputModel = (PPG_Model) inputData;
         LineData data = chart.getData();
         if (data != null) {
-            ILineDataSet minSet = data.getDataSetByIndex(0);
-            ILineDataSet medianSet = data.getDataSetByIndex(1);
-            ILineDataSet maxSet = data.getDataSetByIndex(2);
+            //ILineDataSet minSet = data.getDataSetByIndex(0);
+            ILineDataSet medianSet = data.getDataSetByIndex(0);
+            //ILineDataSet maxSet = data.getDataSetByIndex(2);
 //            ILineDataSet combineSet = data.getDataSetByIndex(3);
             // set.addEntry(...); // can be called as well
-            if (minSet == null) {
+            /*if (minSet == null) {
                 minSet = createSet();
                 data.addDataSet(minSet);
-            }
+            }*/
             if (medianSet == null) {
                 medianSet = createSet();
                 data.addDataSet(medianSet);
             }
-            if (maxSet == null) {
+            /*if (maxSet == null) {
                 maxSet = createSet();
                 data.addDataSet(maxSet);
-            }
+            }*/
 //            if(combineSet == null){
 //                combineSet = createSet();
 //                data.addDataSet(combineSet);
 //            }
             if(inputData!=null) {
                 super.updateMaxMinYAxisRealTime(chart, inputModel);
-                data.addEntry(new Entry(minSet.getEntryCount(), inputModel.getMin()), 0);
-                data.addEntry(new Entry(medianSet.getEntryCount(), inputModel.getMedian()), 1);
-                data.addEntry(new Entry(maxSet.getEntryCount(), inputModel.getMax()), 2);
+                //data.addEntry(new Entry(minSet.getEntryCount(), inputModel.getMin()), 0);
+                data.addEntry(new Entry(medianSet.getEntryCount(), inputModel.getMedian()), 0);
+                //data.addEntry(new Entry(maxSet.getEntryCount(), inputModel.getMax()), 2);
                 data.notifyDataChanged();
             }
             // let the chart know it's data has changed

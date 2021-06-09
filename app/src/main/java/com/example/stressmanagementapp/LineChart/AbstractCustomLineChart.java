@@ -20,7 +20,7 @@ public abstract class AbstractCustomLineChart {
     public AbstractCustomLineChart(LineChart chart){
         this.chart=chart;
         // enable description text
-        chart.getDescription().setEnabled(true);
+        chart.getDescription().setEnabled(false);
 
         // enable touch gestures
         chart.setTouchEnabled(true);
@@ -38,7 +38,7 @@ public abstract class AbstractCustomLineChart {
         chart.setBackgroundColor(Color.LTGRAY);
 
         LineData data = new LineData();
-        data.setValueTextColor(Color.WHITE);
+        data.setValueTextColor(Color.GRAY);
 
         // add empty data
         chart.setData(data);
@@ -113,7 +113,7 @@ public abstract class AbstractCustomLineChart {
 
     public LineDataSet createSet() {
 
-        LineDataSet set = new LineDataSet(null, "Dynamic Data");
+        LineDataSet set = new LineDataSet(null, "PPG Signal Data");
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
         set.setColor(ColorTemplate.getHoloBlue());
         set.setCircleColor(Color.WHITE);
