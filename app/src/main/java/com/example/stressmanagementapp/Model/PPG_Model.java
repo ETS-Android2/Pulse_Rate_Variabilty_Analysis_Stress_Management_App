@@ -9,65 +9,30 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import polar.com.sdk.api.model.PolarOhrPPGData;
 
 public class PPG_Model implements Model {
-    private int ppg_index;
     private float ppg0, ppg1, ppg2;
-    private float min, median, max;
     private float ambient,ambient2;
-    private float diff_MaxMed, diff_MedMin;
+    private long status;
+    private List<Integer> ppgDataSamples;
     private Date logDateTime;
+    private String userId;
+    private String measureId;
 
-    public PPG_Model(PolarOhrPPGData.PolarOhrPPGSample ppgSample, int sampleIndex, Date logDate) {
-        this.ppg_index = sampleIndex;
-
-        this.ppg0 = ppgSample.ppg0;
-        this.ppg1 = ppgSample.ppg1;
-        this.ppg2 = ppgSample.ppg2;
-
-        this.min = calMin();
-        this.median = calMedian();
-        this.max=calMax();
-
-        this.diff_MaxMed = calDiffMaxMed();
-        this.diff_MedMin = calDiffMedMin();
-        this.ambient = ppgSample.ambient;
-        this.ambient2 = ppgSample.ambient2;
-
-        this.logDateTime = logDate;
-    }
-    private float calDiffMaxMed() {
-        return max-median;
-    }
-
-    private float calDiffMedMin() {
-        return median-min;
-    }
-
-
-
-    public float calMin(){
-        float currentMin = Math.min(Math.min(ppg0,ppg1), Math.min(ppg1,ppg2));
-        return currentMin;
-    }
-    public float calMedian(){
-        float currentMedian = Math.max(Math.min(ppg0,ppg1), Math.min(Math.max(ppg0,ppg1),ppg2));
-        return currentMedian;
-    }
-
-    public float calMax(){
-        float currentMin = Math.max(Math.max(ppg0,ppg1), Math.max(ppg1,ppg2));
-        return currentMin;
-    }
-
-    public int getPpg_index() {
-        return ppg_index;
-    }
-
-    public void setPpg_index(int ppg_index) {
-        this.ppg_index = ppg_index;
+    public PPG_Model(PolarOhrPPGData.PolarOhrPPGSample sample, Date logDateTime, String userId, String measureId) {
+        this.ppg0=sample.ppg0;
+        this.ppg1=sample.ppg1;
+        this.ppg2=sample.ppg2;
+        this.ambient=sample.ambient;
+        this.ambient=sample.ambient2;
+        this.status=sample.status;
+        this.ppgDataSample=sample.ppgDataSamples;
+        this.logDateTime = logDateTime;
+        this.userId = userId;
+        this.measureId = measureId;
     }
 
     public float getPpg0() {
@@ -94,30 +59,6 @@ public class PPG_Model implements Model {
         this.ppg2 = ppg2;
     }
 
-    public float getMin() {
-        return min;
-    }
-
-    public void setMin(float min) {
-        this.min = min;
-    }
-
-    public float getMedian() {
-        return median;
-    }
-
-    public void setMedian(float median) {
-        this.median = median;
-    }
-
-    public float getMax() {
-        return max;
-    }
-
-    public void setMax(float max) {
-        this.max = max;
-    }
-
     public float getAmbient() {
         return ambient;
     }
@@ -126,20 +67,12 @@ public class PPG_Model implements Model {
         this.ambient = ambient;
     }
 
-    public float getDiff_MaxMed() {
-        return diff_MaxMed;
+    public float getAmbient2() {
+        return ambient2;
     }
 
-    public void setDiff_MaxMed(float diff_MaxMed) {
-        this.diff_MaxMed = diff_MaxMed;
-    }
-
-    public float getDiff_MedMin() {
-        return diff_MedMin;
-    }
-
-    public void setDiff_MedMin(float diff_MedMin) {
-        this.diff_MedMin = diff_MedMin;
+    public void setAmbient2(float ambient2) {
+        this.ambient2 = ambient2;
     }
 
     public Date getLogDateTime() {
@@ -150,21 +83,20 @@ public class PPG_Model implements Model {
         this.logDateTime = logDateTime;
     }
 
-    @Override
-    public String toString() {
-        return "PPG_Model{" +
-                "ppg_index=" + ppg_index +
-                ", ppg0=" + ppg0 +
-                ", ppg1=" + ppg1 +
-                ", ppg2=" + ppg2 +
-                ", min=" + min +
-                ", median=" + median +
-                ", max=" + max +
-                ", ambient=" + ambient +
-                ", diff_MaxMed=" + diff_MaxMed +
-                ", diff_MedMin=" + diff_MedMin +
-                ", logDateTime='" + logDateTime + '\'' +
-                '}';
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getMeasureId() {
+        return measureId;
+    }
+
+    public void setMeasureId(String measureId) {
+        this.measureId = measureId;
     }
 
     public JSONObject toJsonObject(){
