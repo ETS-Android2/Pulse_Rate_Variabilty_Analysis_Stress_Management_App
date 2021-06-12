@@ -80,8 +80,9 @@ public class MeasuringActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_measuring_realtime_update_chart_and_data);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         try {
-            mSocket = IO.socket("http://192.168.1.12:5000");
+            mSocket = IO.socket("http://192.168.1.12:5000/realTimeData");
             mSocket.connect();
+            mSocket.emit("PPG_Signal",1);
         } catch (URISyntaxException e) {
             e.printStackTrace();
             System.out.println("ERROR "+e.getMessage());
@@ -289,10 +290,11 @@ public class MeasuringActivity extends AppCompatActivity {
                                 for( PolarOhrPPGData.PolarOhrPPGSample sample : polarOhrPPGData.samples ){
                                     SimpleDateFormat dft = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
                                     Date currentTime = Calendar.getInstance().getTime();
-                                    ppgModel=new PPG_Model(sample,ppgIndex,currentTime);
+                                    ppgModel=new PPG_Model(sample,currentTime);
                                     Log.d(TAG,"Detect ppgModel: "+ppgModel.toJsonObject().toString());
                                     try {
                                         mSocket.emit("PPG_Signal",ppgModel.toJsonObject().toString());
+                                        System.out.println("emitted");
                                     }catch (Exception ex){
                                         ex.printStackTrace();
                                         System.out.println("ERROR during emitting message");

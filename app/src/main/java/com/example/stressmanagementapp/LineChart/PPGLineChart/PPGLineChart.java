@@ -76,7 +76,7 @@ public class PPGLineChart extends AbstractCustomLineChart {
         LineData data = chart.getData();
         if (data != null) {
             //ILineDataSet minSet = data.getDataSetByIndex(0);
-            ILineDataSet medianSet = data.getDataSetByIndex(0);
+            ILineDataSet dataSet1 = data.getDataSetByIndex(0);
             //ILineDataSet maxSet = data.getDataSetByIndex(2);
 //            ILineDataSet combineSet = data.getDataSetByIndex(3);
             // set.addEntry(...); // can be called as well
@@ -84,9 +84,9 @@ public class PPGLineChart extends AbstractCustomLineChart {
                 minSet = createSet();
                 data.addDataSet(minSet);
             }*/
-            if (medianSet == null) {
-                medianSet = createSet();
-                data.addDataSet(medianSet);
+            if (dataSet1 == null) {
+                dataSet1 = createSet();
+                data.addDataSet(dataSet1);
             }
             /*if (maxSet == null) {
                 maxSet = createSet();
@@ -99,7 +99,7 @@ public class PPGLineChart extends AbstractCustomLineChart {
             if(inputData!=null) {
                 super.updateMaxMinYAxisRealTime(chart, inputModel);
                 //data.addEntry(new Entry(minSet.getEntryCount(), inputModel.getMin()), 0);
-                data.addEntry(new Entry(medianSet.getEntryCount(), inputModel.getMedian()), 0);
+                data.addEntry(new Entry(dataSet1.getEntryCount(), inputModel.getPpg0()), 0);
                 //data.addEntry(new Entry(maxSet.getEntryCount(), inputModel.getMax()), 2);
                 data.notifyDataChanged();
             }
