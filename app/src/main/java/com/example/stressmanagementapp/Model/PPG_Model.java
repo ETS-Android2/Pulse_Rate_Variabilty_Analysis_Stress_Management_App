@@ -17,20 +17,18 @@ public class PPG_Model implements Model {
     private float ppg0, ppg1, ppg2;
     private float ambient,ambient2;
     private long status;
-    private List<Integer> ppgDataSamples;
-    private Date logDateTime;
+    private String eventTime;
     private String userId;
     private String measureId;
 
-    public PPG_Model(PolarOhrPPGData.PolarOhrPPGSample sample, Date logDateTime, String userId, String measureId) {
+    public PPG_Model(PolarOhrPPGData.PolarOhrPPGSample sample, String eventTime, String userId, String measureId) {
         this.ppg0=sample.ppg0;
         this.ppg1=sample.ppg1;
         this.ppg2=sample.ppg2;
         this.ambient=sample.ambient;
         this.ambient=sample.ambient2;
         this.status=sample.status;
-        this.ppgDataSample=sample.ppgDataSamples;
-        this.logDateTime = logDateTime;
+        this.eventTime = eventTime;
         this.userId = userId;
         this.measureId = measureId;
     }
@@ -75,12 +73,20 @@ public class PPG_Model implements Model {
         this.ambient2 = ambient2;
     }
 
-    public Date getLogDateTime() {
-        return logDateTime;
+    public long getStatus() {
+        return status;
     }
 
-    public void setLogDateTime(Date logDateTime) {
-        this.logDateTime = logDateTime;
+    public void setStatus(long status) {
+        this.status = status;
+    }
+
+    public String getEventTime() {
+        return eventTime;
+    }
+
+    public void setEventTime(String eventTime) {
+        this.eventTime = eventTime;
     }
 
     public String getUserId() {

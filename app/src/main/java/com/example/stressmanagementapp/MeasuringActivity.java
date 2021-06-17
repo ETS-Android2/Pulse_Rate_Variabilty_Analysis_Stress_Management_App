@@ -19,6 +19,7 @@ import com.example.stressmanagementapp.LineChart.AbstractCustomLineChart;
 import com.example.stressmanagementapp.LineChart.PPGLineChart.PPGLineChart;
 import com.example.stressmanagementapp.Model.PPG_Model;
 import com.example.stressmanagementapp.Util.CustomThread;
+import com.example.stressmanagementapp.Util.DateUtil;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.DoubleBounce;
@@ -52,7 +53,7 @@ public class MeasuringActivity extends AppCompatActivity {
     private LineChart chart;
     private AbstractCustomLineChart ppgLineChart;
     private Intent intent;
-
+    private String userId, measureId;
     public final static String TAG = MeasuringActivity.class.getSimpleName();
 
     //Sensor API related
@@ -80,7 +81,7 @@ public class MeasuringActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_measuring_realtime_update_chart_and_data);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         try {
-            mSocket = IO.socket("http://192.168.1.12:5000/realTimeData");
+            mSocket = IO.socket("http://192.168.1.5:5000/realTimeData");
             mSocket.connect();
             mSocket.emit("PPG_Signal",1);
         } catch (URISyntaxException e) {
@@ -96,7 +97,11 @@ public class MeasuringActivity extends AppCompatActivity {
         setupBtnListener();
 
     }
-
+    private void initMeasureRecord(){
+        this.userId="6058ba30ba59f62decefbe3d";
+        this.measureId=String.format("%s_%s",userId, DateUtil.getDateStringInMeasuredRecord());
+        Log.i(TAG, "Measure Id = "+this.measureId);
+    }
     private void initThreadState() {
         stopReceivePPGThread = false;
         stopUpdateLineChartThread = false;
@@ -288,12 +293,12 @@ public class MeasuringActivity extends AppCompatActivity {
                     ppgDisposable = api.requestPpgSettings(DEVICE_ID).toFlowable().flatMap((Function<PolarSensorSetting, Publisher<PolarOhrPPGData>>) polarPPGSettings -> api.startOhrPPGStreaming(DEVICE_ID,polarPPGSettings.maxSettings())).subscribe(
                             polarOhrPPGData -> {
                                 for( PolarOhrPPGData.PolarOhrPPGSample sample : polarOhrPPGData.samples ){
-                                    SimpleDateFormat dft = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-                                    Date currentTime = Calendar.getInstance().getTime();
-                                    ppgModel=new PPG_Model(sample,currentTime);
+                                    SimpleDateFormat dft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                                    Date currentTime = new Date(System.currentTimeMillis());
+                                    ppgModel=new PPG_Model(sample,dft.format(currentTime),userId,measureId);
                                     Log.d(TAG,"Detect ppgModel: "+ppgModel.toJsonObject().toString());
                                     try {
-                                        mSocket.emit("PPG_Signal",ppgModel.toJsonObject().toString());
+                                        mSocket.emit("PPG_Signal",ppgModel.toJsonObject().toString()+"\n");
                                         System.out.println("emitted");
                                     }catch (Exception ex){
                                         ex.printStackTrace();
