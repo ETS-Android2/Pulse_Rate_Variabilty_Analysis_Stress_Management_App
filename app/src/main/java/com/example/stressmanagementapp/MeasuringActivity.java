@@ -19,6 +19,7 @@ import com.example.stressmanagementapp.LineChart.AbstractCustomLineChart;
 import com.example.stressmanagementapp.LineChart.PPGLineChart.PPGLineChart;
 import com.example.stressmanagementapp.Model.PPG_Model;
 import com.example.stressmanagementapp.Util.CustomThread;
+import com.example.stressmanagementapp.Util.DateUtil;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.ybq.android.spinkit.sprite.Sprite;
 import com.github.ybq.android.spinkit.style.DoubleBounce;
@@ -74,27 +75,37 @@ public class MeasuringActivity extends AppCompatActivity {
     private JSONObject sensorData;
     private Socket mSocket;
 
+    private String userId, measureId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_measuring_realtime_update_chart_and_data);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         try {
+<<<<<<< HEAD
+            mSocket = IO.socket("http://192.168.2.5:5000/realTimeData");
+=======
             mSocket = IO.socket("http://192.168.1.12:5000/realTimeData");
+>>>>>>> 62c2e15bad79791bbb50cb1e5304aeefc566ea98
             mSocket.connect();
             mSocket.emit("PPG_Signal",1);
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            System.out.println("ERROR "+e.getMessage());
         }
-
         startMeasureBtn = findViewById(R.id.startMeasureBtn);
         stopMeasureBtn = findViewById(R.id.stopMeasureBtn);
+        initMeasureRecord();
         initThreadState();
         setupLineChart();
         setupSensorApi();
         setupBtnListener();
 
+    }
+    private void initMeasureRecord(){
+        this.userId="6058ba30ba59f62decefbe3d";
+        this.measureId=String.format("%s_%s",userId, DateUtil.getDateStringInMeasuredRecord());
+        Log.i(TAG, "Measure Id = "+this.measureId);
     }
 
     private void initThreadState() {
@@ -130,10 +141,9 @@ public class MeasuringActivity extends AppCompatActivity {
                         api.disconnectFromDevice(DEVICE_ID);
                         PPG_DataThread.stopThread();
                         updatePPG_LineChartThread.stopThread();
-                        stopReceivePPGThread=true;
-                        stopUpdateLineChartThread=true;
                         initThreadState();
                         loadingDialog.dismissDialog();
+                        mSocket.close();
                         ppgLineChart.chart.clear();
                     } catch (PolarInvalidArgument polarInvalidArgument) {
                         loadingDialog.dismissDialog();
@@ -288,12 +298,21 @@ public class MeasuringActivity extends AppCompatActivity {
                     ppgDisposable = api.requestPpgSettings(DEVICE_ID).toFlowable().flatMap((Function<PolarSensorSetting, Publisher<PolarOhrPPGData>>) polarPPGSettings -> api.startOhrPPGStreaming(DEVICE_ID,polarPPGSettings.maxSettings())).subscribe(
                             polarOhrPPGData -> {
                                 for( PolarOhrPPGData.PolarOhrPPGSample sample : polarOhrPPGData.samples ){
+<<<<<<< HEAD
+                                    SimpleDateFormat dft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                                    Date currentTime = new Date(System.currentTimeMillis());
+                                    ppgModel=new PPG_Model(sample,dft.format(currentTime),userId,measureId);
+                                    Log.d(TAG,"Detect ppgModel: "+ppgModel.toJsonObject().toString());
+                                    try {
+                                        mSocket.emit("PPG_Signal",ppgModel.toJsonObject().toString()+"\n");
+=======
                                     SimpleDateFormat dft = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
                                     Date currentTime = Calendar.getInstance().getTime();
                                     ppgModel=new PPG_Model(sample,currentTime);
                                     Log.d(TAG,"Detect ppgModel: "+ppgModel.toJsonObject().toString());
                                     try {
                                         mSocket.emit("PPG_Signal",ppgModel.toJsonObject().toString());
+>>>>>>> 62c2e15bad79791bbb50cb1e5304aeefc566ea98
                                         System.out.println("emitted");
                                     }catch (Exception ex){
                                         ex.printStackTrace();
@@ -326,7 +345,7 @@ public class MeasuringActivity extends AppCompatActivity {
                     runOnUiThread(getPPGDataRunnable);
 
                     try {
-                        Thread.sleep(30);
+                        Thread.sleep(50);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -338,6 +357,7 @@ public class MeasuringActivity extends AppCompatActivity {
     private CustomThread initUpdatePPG_RealTimeLineChart(){
         Runnable updateLineChartRunnable;
         Thread updateLineChart_OnUIThread;
+
         updateLineChartRunnable = (new Runnable() {
             @Override
             public void run() {
@@ -348,6 +368,7 @@ public class MeasuringActivity extends AppCompatActivity {
                 }
             }
         });
+
         updateLineChart_OnUIThread = new Thread(new Runnable() {
             @Override
             public void run() {

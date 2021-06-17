@@ -19,6 +19,7 @@ public class PPGLineChart extends AbstractCustomLineChart {
     protected Typeface tfRegular;
     protected Typeface tfLight;
 
+
     public PPGLineChart(LineChart chart){
         super(chart);
         this.chart=chart;
@@ -78,7 +79,7 @@ public class PPGLineChart extends AbstractCustomLineChart {
             //ILineDataSet minSet = data.getDataSetByIndex(0);
             ILineDataSet dataSet1 = data.getDataSetByIndex(0);
             //ILineDataSet maxSet = data.getDataSetByIndex(2);
-//            ILineDataSet combineSet = data.getDataSetByIndex(3);
+            //ILineDataSet combineSet = data.getDataSetByIndex(3);
             // set.addEntry(...); // can be called as well
             /*if (minSet == null) {
                 minSet = createSet();

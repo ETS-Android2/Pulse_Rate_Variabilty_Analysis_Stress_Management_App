@@ -17,17 +17,17 @@ public abstract class AbstractCustomLineChart {
     public LineChart chart;
     protected Typeface tfRegular;
     protected Typeface tfLight;
+
     public AbstractCustomLineChart(LineChart chart){
         this.chart=chart;
         // enable description text
         chart.getDescription().setEnabled(false);
 
         // enable touch gestures
-        chart.setTouchEnabled(true);
+        chart.setTouchEnabled(false);
 
         // enable scaling and dragging
-        chart.setDragEnabled(true
-        );
+        chart.setDragEnabled(true);
         chart.setScaleEnabled(true);
         chart.setDrawGridBackground(false);
 
@@ -67,7 +67,7 @@ public abstract class AbstractCustomLineChart {
         rightAxis.setEnabled(false);
     }
 
-    public abstract void addEntry(Object inputData) ;
+    public abstract void addEntry(Object inputData);
 //        //Sample code for addEntry
 //        LineData data = chart.getData();
 //        if (data != null) {
