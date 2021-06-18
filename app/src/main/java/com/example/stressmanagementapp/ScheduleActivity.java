@@ -5,37 +5,88 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TimePicker;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.Calendar;
+import android.provider.Settings.Secure;
+
+import com.example.stressmanagementapp.Model.MeasuredRecordModel;
+import com.example.stressmanagementapp.Util.DateUtil;
 
 public class ScheduleActivity extends AppCompatActivity {
     private Spinner categorySpinner;
     private ImageView fromDateSelectorBtn,fromTimeSelectorBtn, toDateSelectorBtn,toTimeSelectorBtn;
     private EditText fromDateText,fromTimeText,toDateText,toTimeText;
+    private ConstraintLayout fromDateLayout,fromDateContainer_nowLayout;
+    private Switch startNowSwitch;
+    private Button addScheduleBtn;
+    private String userID, mobileID ;
+    private String DEVICE_ID = "719AF624"; // or bt address like F5:A7:B8:EF:7A:D1 // TODO replace with your device id
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_schedule_measure_activity);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        userID = "605995e57194bc0568afdec1";
+        mobileID= Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
         initCategorySpinner();
+        initStartNowSwitch();
+        initDateSelector();
+        initAddScheduleBtn();
 
     }
+
+    private void initAddScheduleBtn() {
+        addScheduleBtn = findViewById(R.id.addScheduleBtn);
+        addScheduleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String measureID =String.format("%s_%s",userID, DateUtil.getDateStringInMeasuredRecord());
+
+
+            }
+        });
+    }
+
+    private void initStartNowSwitch() {
+        startNowSwitch = findViewById(R.id.startNowSwitch);
+        startNowSwitch.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                if(startNowSwitch.isChecked()){
+                    fromDateLayout.setVisibility(View.INVISIBLE);
+                    fromDateContainer_nowLayout.setVisibility(View.VISIBLE);
+                }else{
+                    fromDateLayout.setVisibility(View.VISIBLE);
+                    fromDateContainer_nowLayout.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+    }
+
     private void initCategorySpinner(){
         categorySpinner = (Spinner) findViewById(R.id.activityCategorySpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.activity_category_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(adapter);
-        initDateSelector();
     }
     private void initDateSelector(){
+        fromDateLayout = findViewById(R.id.fromDateContainer);
+        fromDateContainer_nowLayout = findViewById(R.id.fromDateContainer_now);
         Calendar now = Calendar.getInstance();
         int year = now.get(Calendar.YEAR);
         int month = now.get(Calendar.MONTH);

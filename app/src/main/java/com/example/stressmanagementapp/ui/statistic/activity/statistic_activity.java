@@ -1,9 +1,10 @@
-package com.example.stressmanagementapp;
+package com.example.stressmanagementapp.ui.statistic.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import com.example.stressmanagementapp.R;
 import com.example.stressmanagementapp.ui.main.StatisticActivityFragment;
 
 public class statistic_activity extends AppCompatActivity {

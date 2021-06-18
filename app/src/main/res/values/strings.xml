@@ -32,6 +32,7 @@
     <string name="inputEventNameHint">Event Name</string>
     <string name="inputLocationHint">Location</string>
     <string name="fromDateLabel">Start</string>
+    <string name="fromDateNowLabel">Set start date to the save date</string>
     <string name="endDateLabel">End</string>
     <string name="addScheduleBtnLabel">Save</string>
     <string name="resetScheduleBtnLabel">Clear</string>
@@ -45,8 +46,14 @@
 
     <!--   end schedule realtime measuring page-->
 
+    <!-- Stat Page-->
+    <string name="statLabel_activity">Activity</string>
+    <string name="statLabel_BPM">BPM</string>
+    <string name="statLabel_stressLevel">Stress Level</string>
 
-
+    <!-- Stat Page Activity-->
+    <string name="statLabel_activity_positive">Positive Result</string>
+    <string name="statLabel_activity_negative">Negative Result</string>
 
 
 </resources>

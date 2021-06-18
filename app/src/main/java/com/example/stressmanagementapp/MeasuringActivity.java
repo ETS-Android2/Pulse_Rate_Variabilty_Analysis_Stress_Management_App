@@ -372,5 +372,7 @@ public class MeasuringActivity extends AppCompatActivity {
         });
         return new CustomThread(updateLineChartRunnable,updateLineChart_OnUIThread);
     }
-
+    public String getSensorID(){
+        return this.DEVICE_ID;
+    }
 }
