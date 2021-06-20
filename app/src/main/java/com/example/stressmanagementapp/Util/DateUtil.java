@@ -1,5 +1,7 @@
 package com.example.stressmanagementapp.Util;
 
+import android.widget.DatePicker;
+
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,6 +19,16 @@ public class DateUtil {
         int millis = now.get(Calendar.MILLISECOND);
         String dateStrInMeasuredRecord = String.format("%s%s%sT%s%s%s%s",year,month,day,hour,minute,second,millis);
         return dateStrInMeasuredRecord;
+    }
+    public static java.util.Date getDateFromDatePicker(DatePicker datePicker){
+        int day = datePicker.getDayOfMonth();
+        int month = datePicker.getMonth();
+        int year =  datePicker.getYear();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day);
+
+        return calendar.getTime();
     }
 
 }

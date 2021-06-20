@@ -8,11 +8,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.example.stressmanagementapp.Dialog.LoadingDialog;
 import com.example.stressmanagementapp.LineChart.AbstractCustomLineChart;
@@ -80,6 +84,33 @@ public class MeasuringActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_measuring_realtime_update_chart_and_data);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        startMeasureBtn = findViewById(R.id.startMeasureBtn);
+        stopMeasureBtn = findViewById(R.id.stopMeasureBtn);
+        initThreadState();
+        setupLineChart();
+        setupSensorApi();
+        setupBtnListener();
+
+        Intent intent = getIntent();
+        if(intent!=null) {
+            String endDate = intent.getStringExtra("endDateTime");
+            String activityName = intent.getStringExtra("activityName");
+            TextView scheduleEndAt=findViewById(R.id.scheduleEndAt);
+            if (activityName == null) {
+                setTitle("Quick Measurement");
+                scheduleEndAt.setVisibility(View.INVISIBLE);
+            } else if(activityName != null){
+                setTitle("Measuring " + activityName);
+                scheduleEndAt.setVisibility(View.VISIBLE);
+                scheduleEndAt.setText("End at: "+endDate);
+            }
+        }
+//            measureNow.putExtra("userId",userID);
+//            measureNow.putExtra("deviceId",mobileID);
+//            measureNow.putExtra("sensorId",DEVICE_ID);
+//            measureNow.putExtra("activityId",response.toString());
+//            measureNow.putExtra("endDateTime",endDate);
         try {
             mSocket = IO.socket("http://192.168.1.5:5000/realTimeData");
             mSocket.connect();
@@ -89,12 +120,7 @@ public class MeasuringActivity extends AppCompatActivity {
             System.out.println("ERROR "+e.getMessage());
         }
 
-        startMeasureBtn = findViewById(R.id.startMeasureBtn);
-        stopMeasureBtn = findViewById(R.id.stopMeasureBtn);
-        initThreadState();
-        setupLineChart();
-        setupSensorApi();
-        setupBtnListener();
+
 
     }
     private void initMeasureRecord(){

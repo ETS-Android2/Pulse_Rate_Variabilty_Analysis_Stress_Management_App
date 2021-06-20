@@ -33,7 +33,7 @@
         android:src="@drawable/btn_schedulemeasurement"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewScheduledMeasurmentBtn" />
+        app:layout_constraintTop_toBottomOf="@id/quickMeasurmentBtn" />
 
     <ImageButton
         android:id="@+id/viewScheduledMeasurmentBtn"
@@ -47,6 +47,6 @@
         android:src="@drawable/btn_viewscheduledmeasurment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/quickMeasurmentBtn" />
+        app:layout_constraintTop_toBottomOf="@id/scheduleMeasurmentBtn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
