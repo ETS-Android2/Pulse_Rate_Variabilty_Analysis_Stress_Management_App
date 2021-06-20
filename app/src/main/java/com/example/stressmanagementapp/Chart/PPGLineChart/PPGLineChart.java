@@ -1,9 +1,10 @@
-package com.example.stressmanagementapp.LineChart.HRLineChart;
+package com.example.stressmanagementapp.Chart.PPGLineChart;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
 
-import com.example.stressmanagementapp.LineChart.AbstractCustomLineChart;
+import com.example.stressmanagementapp.Chart.AbstractCustomLineChart;
+import com.example.stressmanagementapp.Model.PPG_Model;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -13,16 +14,16 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 
-public class HRLineChart extends AbstractCustomLineChart {
+public class PPGLineChart extends AbstractCustomLineChart {
     public LineChart chart;
     protected Typeface tfRegular;
     protected Typeface tfLight;
 
-    public HRLineChart(LineChart chart){
+    public PPGLineChart(LineChart chart){
         super(chart);
         this.chart=chart;
         // enable description text
-        chart.getDescription().setEnabled(true);
+        chart.getDescription().setEnabled(false);
 
         // enable touch gestures
         chart.setTouchEnabled(true);
@@ -37,10 +38,10 @@ public class HRLineChart extends AbstractCustomLineChart {
         chart.setPinchZoom(true);
 
         // set an alternative background color
-        chart.setBackgroundColor(Color.LTGRAY);
+        chart.setBackgroundColor(Color.BLACK);
 
         LineData data = new LineData();
-        data.setValueTextColor(Color.WHITE);
+        data.setValueTextColor(Color.RED);
 
         // add empty data
         chart.setData(data);
@@ -51,7 +52,7 @@ public class HRLineChart extends AbstractCustomLineChart {
         // modify the legend ...
         l.setForm(Legend.LegendForm.LINE);
         l.setTypeface(tfLight);
-        l.setTextColor(Color.WHITE);
+        l.setTextColor(Color.RED);
 
         XAxis xl = chart.getXAxis();
         xl.setTypeface(tfLight);
@@ -71,19 +72,37 @@ public class HRLineChart extends AbstractCustomLineChart {
 
     @Override
     public void addEntry(Object inputData) {
-        //Sample code for addEntry
-        float hrData = (float) inputData;
+        PPG_Model inputModel = (PPG_Model) inputData;
         LineData data = chart.getData();
         if (data != null) {
-            ILineDataSet set = data.getDataSetByIndex(0);
+            //ILineDataSet minSet = data.getDataSetByIndex(0);
+            ILineDataSet dataSet1 = data.getDataSetByIndex(0);
+            //ILineDataSet maxSet = data.getDataSetByIndex(2);
+//            ILineDataSet combineSet = data.getDataSetByIndex(3);
             // set.addEntry(...); // can be called as well
-            if (set == null) {
-                set = createSet();
-                data.addDataSet(set);
+            /*if (minSet == null) {
+                minSet = createSet();
+                data.addDataSet(minSet);
+            }*/
+            if (dataSet1 == null) {
+                dataSet1 = createSet();
+                data.addDataSet(dataSet1);
             }
-            data.addEntry(new Entry(set.getEntryCount(), hrData), 0);
-            data.notifyDataChanged();
-
+            /*if (maxSet == null) {
+                maxSet = createSet();
+                data.addDataSet(maxSet);
+            }*/
+//            if(combineSet == null){
+//                combineSet = createSet();
+//                data.addDataSet(combineSet);
+//            }
+            if(inputData!=null) {
+                super.updateMaxMinYAxisRealTime(chart, inputModel);
+                //data.addEntry(new Entry(minSet.getEntryCount(), inputModel.getMin()), 0);
+                data.addEntry(new Entry(dataSet1.getEntryCount(), inputModel.getPpg0()), 0);
+                //data.addEntry(new Entry(maxSet.getEntryCount(), inputModel.getMax()), 2);
+                data.notifyDataChanged();
+            }
             // let the chart know it's data has changed
             chart.notifyDataSetChanged();
 
@@ -93,6 +112,7 @@ public class HRLineChart extends AbstractCustomLineChart {
 
             // move to the latest entry
             chart.moveViewToX(data.getEntryCount());
+
             // this automatically refreshes the chart (calls invalidate())
             // chart.moveViewTo(data.getXValCount()-7, 55f,
             // AxisDependency.LEFT);

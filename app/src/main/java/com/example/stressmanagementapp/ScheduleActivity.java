@@ -31,7 +31,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -207,8 +209,8 @@ public class ScheduleActivity extends AppCompatActivity {
                             measureNow.putExtra("sensorId", DEVICE_ID);
                             measureNow.putExtra("activityId", response.get("activityID").toString());
                             measureNow.putExtra("activityName", activityName);
-                            Log.d("addNewActivityIfNotExist", "onResponse: "+endDate.toString());
-                            measureNow.putExtra("endDateTime", endDate.toString());
+                            Log.d("addNewActivityIfNotExist", "onResponse: "+toDateText.toString());
+                            measureNow.putExtra("endDateTime","Measurement will end at: " +  toDateText.getText().toString());
                             startActivity(measureNow);
                         }catch (Exception e){
                             e.printStackTrace();
@@ -315,7 +317,7 @@ public class ScheduleActivity extends AppCompatActivity {
     }
 
     private Calendar showDateTimeDialog(final EditText date_time_in) {
-        final Calendar calendar = Calendar.getInstance();
+        final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Hong_Kong"), Locale.US);
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -330,7 +332,7 @@ public class ScheduleActivity extends AppCompatActivity {
                         calendar.set(Calendar.MINUTE, minute);
 
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
+                        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+08:00"));
                         date_time_in.setText(simpleDateFormat.format(calendar.getTime()));
                     }
                 };

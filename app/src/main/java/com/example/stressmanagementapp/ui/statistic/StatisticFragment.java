@@ -1,47 +1,124 @@
 package com.example.stressmanagementapp.ui.statistic;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.stressmanagementapp.MeasuringActivity;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.stressmanagementapp.R;
-import com.example.stressmanagementapp.ui.statistic.activity.statistic_activity;
+import com.example.stressmanagementapp.ScheduleActivity;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StatisticFragment extends Fragment {
 
     private StatisticViewModel statisticViewModel;
-    private ConstraintLayout activityBtn;
+    private ListView activityListView;
+    private String api;
+    private View root;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         statisticViewModel =
                 new ViewModelProvider(this).get(StatisticViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_statistic, container, false);
-        activityBtn = root.findViewById(R.id.stat_activity_btn_container);
-        activityBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), statistic_activity.class);
-                startActivity(intent);
-            }
+        root = inflater.inflate(R.layout.fragment_statistic_activity_result, container, false);
 
-        });
-        statisticViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-            }
-        });
+        api = getString(R.string.api_path);
+
+        inuitMeasuredListView();
         return root;
     }
+
+    private void inuitMeasuredListView() {
+        activityListView = root.findViewById(R.id.measuredList);
+//        String endpoint = "getMeasuredRecordList";
+//        // Instantiate the RequestQueue.
+//        RequestQueue queue = Volley.newRequestQueue(this);
+//        String url = api + "/" + endpoint;
+//        Log.d("getAllActivityCategory", "Connecting url = " + url);
+//        List<String> list = new ArrayList<String>();
+//        // Request a string response from the provided URL.
+//
+//
+//        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        try {
+//                            JSONArray arr = new JSONArray(response);
+//                            list.add("Category");
+//                            for (int i = 0; i < arr.length(); i++) {
+//                                list.add(arr.getString(i));
+//                            }
+//                            Log.d("getAllActivityCategory", "Response body = " + response);
+//                            ArrayAdapter<String> categorySpinnerAdapter = new ArrayAdapter<String>(ScheduleActivity.this,
+//                                    android.R.layout.simple_spinner_dropdown_item, list);
+//                            categorySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                            categorySpinnerAdapter.notifyDataSetChanged();
+//                            Log.d("getAllActivityCategory", "Set adapter");
+//                            activityListView.setAdapter(categorySpinnerAdapter);
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                            Log.e("getAllActivityCategory", "JSONException = " + e.getMessage());
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.e("getAllActivityCategory", "Response body = " + error.toString());
+//            }
+//        });
+//
+//        // Add the request to the RequestQueue.
+//        queue.add(stringRequest);
+//
+//        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                Log.d("getAllActivityCategory", "onItemSelected: " + adapterView.getSelectedItem().toString());
+//                getCategorySelected = adapterView.getSelectedItem().toString();
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//                Log.d("getAllActivityCategory", "onNothingSelected: ");
+//            }
+//        });
+    }
+//        activityBtn = root.findViewById(R.id.stat_activity_btn_container);
+//        activityBtn.setOnClickListener(new View.OnClickListener(){
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getActivity(), statistic_activity.class);
+//                startActivity(intent);
+//            }
+//
+//        });
+//        statisticViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+//            @Override
+//            public void onChanged(@Nullable String s) {
+////                textView.setText(s);
+//            }
+//        });
+//        return root;
+//    }
 }

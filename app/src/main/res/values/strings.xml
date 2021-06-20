@@ -39,6 +39,7 @@
     <string name="addScheduleBtnLabel">Save</string>
     <string name="resetScheduleBtnLabel">Clear</string>
     <string-array name="sortByFilter">
+        <item>Default</item>
         <item>Date (ASC)</item>
         <item>Date (DSC)</item>
         <item>AVG BPM (ASC)</item>

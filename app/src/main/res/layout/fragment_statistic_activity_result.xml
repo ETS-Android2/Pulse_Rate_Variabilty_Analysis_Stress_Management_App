@@ -13,6 +13,128 @@
         tools:context=".ui.main.StatisticActivityFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/BPMStatistic"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toTopOf="@id/pieChartConatiner"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/highestBPMLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Highest"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/highestBPMContainer"
+                app:layout_constraintStart_toStartOf="@+id/highestBPMContainer"
+                app:layout_constraintTop_toBottomOf="@id/highestBPMContainer" />
+
+            <TextView
+                android:id="@+id/avgBPMLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Average"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/avgBPMContainer"
+                app:layout_constraintStart_toStartOf="@+id/avgBPMContainer"
+                app:layout_constraintTop_toBottomOf="@id/avgBPMContainer" />
+
+            <TextView
+                android:id="@+id/lowestBPMLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Lowest"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/lowestBPMContainer"
+                app:layout_constraintStart_toStartOf="@+id/lowestBPMContainer"
+                app:layout_constraintTop_toBottomOf="@id/lowestBPMContainer" />
+
+            <TextView
+                android:id="@+id/bpmStatTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Overall BPM Statistic"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/highestBPMContainer"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:src="@mipmap/ic_dark_red"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bpmStatTitle" />
+
+            <ImageView
+                android:id="@+id/avgBPMContainer"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:src="@mipmap/ic_yellow"
+                app:layout_constraintEnd_toStartOf="@+id/lowestBPMContainer"
+                app:layout_constraintStart_toEndOf="@+id/highestBPMContainer"
+                app:layout_constraintTop_toBottomOf="@+id/bpmStatTitle" />
+
+            <ImageView
+                android:id="@+id/lowestBPMContainer"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:src="@mipmap/ic_dark_green"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bpmStatTitle" />
+
+            <TextView
+                android:id="@+id/avgBPMValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100 BPM"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/avgBPMContainer"
+                app:layout_constraintEnd_toEndOf="@+id/avgBPMContainer"
+                app:layout_constraintStart_toStartOf="@+id/avgBPMContainer"
+                app:layout_constraintTop_toTopOf="@+id/avgBPMContainer" />
+
+            <TextView
+                android:id="@+id/highestBPMValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100 BPM"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/highestBPMContainer"
+                app:layout_constraintEnd_toEndOf="@+id/highestBPMContainer"
+                app:layout_constraintStart_toStartOf="@+id/highestBPMContainer"
+                app:layout_constraintTop_toTopOf="@+id/highestBPMContainer" />
+
+            <TextView
+                android:id="@+id/lowestBPMValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="100 BPM"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/lowestBPMContainer"
+                app:layout_constraintEnd_toEndOf="@+id/lowestBPMContainer"
+                app:layout_constraintStart_toStartOf="@+id/lowestBPMContainer"
+                app:layout_constraintTop_toTopOf="@+id/lowestBPMContainer" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/mostPositiveActivityContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -20,7 +142,7 @@
             app:layout_constraintBottom_toTopOf="@+id/mostNegativeActivityContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/pieChartConatiner">
 
             <TextView
                 android:id="@+id/mostPositiveLabel"
@@ -28,7 +150,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Most Positive Activity"
+                android:text="Most Positive Activity For You"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -94,6 +216,51 @@
                 app:layout_constraintStart_toStartOf="@+id/top3PositiveContainer"
                 app:layout_constraintTop_toBottomOf="@+id/top3PositiveContainer" />
 
+            <TextView
+                android:id="@+id/top1PosActivity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Watch TV"
+                android:textColor="@color/black"
+                app:autoSizeMaxTextSize="14sp"
+                app:autoSizeMinTextSize="9sp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintBottom_toBottomOf="@+id/top1PositiveContainer"
+                app:layout_constraintEnd_toEndOf="@+id/top1PositiveContainer"
+                app:layout_constraintStart_toStartOf="@+id/top1PositiveContainer"
+                app:layout_constraintTop_toTopOf="@+id/top1PositiveContainer" />
+
+            <TextView
+                android:id="@+id/top2PosActivity"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Play GTA"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                app:autoSizeMaxTextSize="12sp"
+                app:autoSizeMinTextSize="9sp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintBottom_toBottomOf="@+id/top2PositiveContainer"
+                app:layout_constraintEnd_toEndOf="@+id/top2PositiveContainer"
+                app:layout_constraintStart_toStartOf="@+id/top2PositiveContainer"
+                app:layout_constraintTop_toTopOf="@+id/top2PositiveContainer" />
+
+            <TextView
+                android:id="@+id/top3PosActivity"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Read comic"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                app:autoSizeMaxTextSize="12sp"
+                app:autoSizeMinTextSize="9sp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintBottom_toBottomOf="@+id/top3PositiveContainer"
+                app:layout_constraintEnd_toEndOf="@+id/top3PositiveContainer"
+                app:layout_constraintStart_toStartOf="@+id/top3PositiveContainer"
+                app:layout_constraintTop_toTopOf="@+id/top3PositiveContainer" />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -101,11 +268,11 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@+id/pieChartConatiner"
+            app:layout_constraintBottom_toTopOf="@id/pieChartConatiner"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mostPositiveActivityContainer">
+            app:layout_constraintTop_toBottomOf="@+id/sortActiivtyResultContainer">
 
             <TextView
                 android:id="@+id/mostNegativeLabel"
@@ -113,7 +280,7 @@
                 android:layout_height="19dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Most Negative Activity"
+                android:text="Most Negative Activity For You"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -178,16 +345,62 @@
                 app:layout_constraintEnd_toEndOf="@+id/top3NegativeContainer"
                 app:layout_constraintStart_toStartOf="@+id/top3NegativeContainer"
                 app:layout_constraintTop_toBottomOf="@+id/top3NegativeContainer" />
+
+            <TextView
+                android:id="@+id/top1NegActivity"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Read comic"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                app:autoSizeMaxTextSize="14sp"
+                app:autoSizeMinTextSize="9sp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintBottom_toBottomOf="@+id/top1NegativeContainer"
+                app:layout_constraintEnd_toEndOf="@+id/top1NegativeContainer"
+                app:layout_constraintStart_toStartOf="@+id/top1NegativeContainer"
+                app:layout_constraintTop_toTopOf="@+id/top1NegativeContainer" />
+
+            <TextView
+                android:id="@+id/top2NegActivity"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Read comic"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                app:autoSizeMaxTextSize="12sp"
+                app:autoSizeMinTextSize="9sp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintBottom_toBottomOf="@+id/top2NegativeContainer"
+                app:layout_constraintEnd_toEndOf="@+id/top2NegativeContainer"
+                app:layout_constraintStart_toStartOf="@+id/top2NegativeContainer"
+                app:layout_constraintTop_toTopOf="@+id/top2NegativeContainer" />
+
+            <TextView
+                android:id="@+id/top3NegActivity"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="Read comic"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                app:autoSizeMaxTextSize="12sp"
+                app:autoSizeMinTextSize="9sp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintBottom_toBottomOf="@+id/top3NegativeContainer"
+                app:layout_constraintEnd_toEndOf="@+id/top3NegativeContainer"
+                app:layout_constraintStart_toStartOf="@+id/top3NegativeContainer"
+                app:layout_constraintTop_toTopOf="@+id/top3NegativeContainer" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/pieChartConatiner"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            app:layout_constraintBottom_toTopOf="@+id/sortActiivtyResultContainer"
+            android:layout_height="200dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@id/mostPositiveActivityContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/mostNegativeActivityContainer">
+            app:layout_constraintTop_toBottomOf="@id/BPMStatistic">
 
             <TextView
                 android:id="@+id/textView16"
@@ -195,31 +408,33 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="PieChart"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Overall Stress Level"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/chart1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/sortActiivtyResultContainer"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="300dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pieChartConatiner">
+            app:layout_constraintTop_toBottomOf="@+id/mostNegativeActivityContainer">
 
             <TextView
-                android:id="@+id/allActivityLabel"
+                android:id="@+id/allRecordLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="All activities"
+                android:text="All Records"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -233,16 +448,16 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ListView
-                android:id="@+id/list"
+                android:id="@+id/measuredList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/spinner2" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

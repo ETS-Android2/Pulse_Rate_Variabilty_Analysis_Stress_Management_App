@@ -2,43 +2,32 @@ package com.example.stressmanagementapp;
 
 import android.Manifest;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.example.stressmanagementapp.Dialog.LoadingDialog;
-import com.example.stressmanagementapp.LineChart.AbstractCustomLineChart;
-import com.example.stressmanagementapp.LineChart.PPGLineChart.PPGLineChart;
+import com.example.stressmanagementapp.Chart.AbstractCustomLineChart;
+import com.example.stressmanagementapp.Chart.PPGLineChart.PPGLineChart;
 import com.example.stressmanagementapp.Model.PPG_Model;
 import com.example.stressmanagementapp.Util.CustomThread;
 import com.example.stressmanagementapp.Util.DateUtil;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.ybq.android.spinkit.sprite.Sprite;
-import com.github.ybq.android.spinkit.style.DoubleBounce;
 
 import org.json.JSONObject;
 import org.reactivestreams.Publisher;
 
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Function;
@@ -49,7 +38,6 @@ import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.PolarBleApiDefaultImpl;
 import polar.com.sdk.api.errors.PolarInvalidArgument;
 import polar.com.sdk.api.model.PolarDeviceInfo;
-import polar.com.sdk.api.model.PolarExerciseEntry;
 import polar.com.sdk.api.model.PolarOhrPPGData;
 import polar.com.sdk.api.model.PolarSensorSetting;
 
@@ -103,7 +91,7 @@ public class MeasuringActivity extends AppCompatActivity {
             } else if(activityName != null){
                 setTitle("Measuring " + activityName);
                 scheduleEndAt.setVisibility(View.VISIBLE);
-                scheduleEndAt.setText("End at: "+endDate);
+                scheduleEndAt.setText(intent.getStringExtra("endDateTime"));
             }
         }
 //            measureNow.putExtra("userId",userID);

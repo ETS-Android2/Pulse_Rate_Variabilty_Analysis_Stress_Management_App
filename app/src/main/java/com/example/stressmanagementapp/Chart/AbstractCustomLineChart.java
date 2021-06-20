@@ -1,4 +1,4 @@
-package com.example.stressmanagementapp.LineChart;
+package com.example.stressmanagementapp.Chart;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
