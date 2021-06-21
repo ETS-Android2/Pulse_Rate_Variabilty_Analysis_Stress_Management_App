@@ -24,10 +24,10 @@
             android:name=".MeasuringActivity"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".ScheduleActivity"
+            android:name=".ui.schedule.ScheduleActivity"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".ViewScheduledMeasureActivity"
+            android:name=".ui.schedule.ViewScheduledMeasureActivity"
             android:parentActivityName=".MainActivity" />
     </application>
 

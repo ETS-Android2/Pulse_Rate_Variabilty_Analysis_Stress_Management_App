@@ -1,17 +1,16 @@
-package com.example.stressmanagementapp;
+package com.example.stressmanagementapp.ui.schedule;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.icu.text.SymbolTable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,24 +21,16 @@ import android.widget.TimePicker;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.TimeZone;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import android.provider.Settings.Secure;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -47,15 +38,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.stressmanagementapp.Model.MeasuredRecordModel;
+import com.example.stressmanagementapp.MeasuringActivity;
+import com.example.stressmanagementapp.R;
 import com.example.stressmanagementapp.Util.DateUtil;
-import com.example.stressmanagementapp.Util.HTTPRequestClientHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import javax.net.ssl.HttpsURLConnection;
 
 public class ScheduleActivity extends AppCompatActivity {
     private Spinner categorySpinner;
@@ -64,12 +53,13 @@ public class ScheduleActivity extends AppCompatActivity {
     private ConstraintLayout fromDateLayout, fromDateContainer_nowLayout;
     private Switch startNowSwitch;
     private Button addScheduleBtn, clearBtn;
-    private String userID, mobileID, measureID, eventName, category;
+    private String userID, mobileID, measureID, eventName, category, activityID;
     private String DEVICE_ID = "719AF624"; // or bt address like F5:A7:B8:EF:7A:D1 // TODO replace with your device id
     private Date startDate, endDate;
     private boolean isStartNow;
     private String getCategorySelected, activityName;
     private String api;
+    private String startDateStr, endDateStr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +88,7 @@ public class ScheduleActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 eventNameText.setText(null);
+                isStartNow=false;
                 fromDateContainer_nowLayout.setVisibility(View.INVISIBLE);
                 fromDateLayout.setVisibility(View.VISIBLE);
                 fromDateText.setText(null);
@@ -111,13 +102,8 @@ public class ScheduleActivity extends AppCompatActivity {
         addScheduleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isStartNow == true) {
-                    //start measure now, call measuring activity
-                    startMeasuringNow();
-                } else {
-                    //Add to schedule collection
-                    createNewSchedule();
-                }
+                //start measure now, call measuring activity
+                prepareSchedulingProcedure();
                 measureID = String.format("%s_%s", userID, DateUtil.getDateStringInMeasuredRecord());
                 //MeasuredRecordModel model = new MeasuredRecordModel(String userID,  measureID,  mobileID,  DEVICE_ID,  activityID,  activityName,  category,  startDateTime,  endDateTime);
 
@@ -125,49 +111,54 @@ public class ScheduleActivity extends AppCompatActivity {
             }
         });
     }
-    private void createNewSchedule(){
-        activityName=eventNameText.getText().toString();
-        String endpoint = "addNewActivityIfNotExist";
+
+    private void createNewSchedule() {
+        activityName = eventNameText.getText().toString();
+        String endpoint = "addSchedule";
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(ScheduleActivity.this);
         String url = api + "/" + endpoint;
-        Log.d("addNewActivityIfNotExist", "Connecting url = " + url);
+        Log.d("addSchedule", "Connecting url = " + url);
         // Request a string response from the provided URL.
         JSONObject requestBody = new JSONObject();
         try {
-            requestBody.put("userID",userID);
-            requestBody.put("category", getCategorySelected.toString());
-            requestBody.put("name", eventNameText.getText().toString());
+            requestBody.put("ownerInUserCollection", userID);
+            requestBody.put("activityIdInActivityCollection", activityID);
+            requestBody.put("activityName",activityName);
+            requestBody.put("category",getCategorySelected);
+            requestBody.put("startDateTime", startDateStr);
+            requestBody.put("endDateTime", endDateStr);
+            requestBody.put("status", "Scheduled");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, url,requestBody,
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, url, requestBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            Log.d("addNewActivityIfNotExist", "Response body = " + response.get("activityID").toString());
-                            Intent measureNow = new Intent(ScheduleActivity.this, MeasuringActivity.class);
-                            measureNow.putExtra("userId", userID);
-                            measureNow.putExtra("deviceId", mobileID);
-                            measureNow.putExtra("sensorId", DEVICE_ID);
-                            measureNow.putExtra("activityId", response.get("activityID").toString());
-                            measureNow.putExtra("activityName", activityName);
-                            Log.d("addNewActivityIfNotExist", "onResponse: "+endDate.toString());
-                            measureNow.putExtra("endDateTime", endDate.toString());
-                            startActivity(measureNow);
-                        }catch (Exception e){
+                            Log.d("addNewActivityIfNotExist", "Response body = " + response.get("success").toString());
+                            AlertDialog.Builder builder = new AlertDialog.Builder(ScheduleActivity.this);
+                            builder.setMessage("Created new schedule")
+                                    .setCancelable(false)
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            //do things
+                                        }
+                                    });
+                            AlertDialog alert = builder.create();
+                            alert.show();
+                        } catch (Exception e) {
                             e.printStackTrace();
                             System.out.println(e.getMessage());
                         }
                     }
-                }, new Response.ErrorListener()
-        {
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("addNewActivityIfNotExist", "Error Response body = " + error.toString());
             }
-        }){
+        }) {
             @Override
             public byte[] getBody() {
                 return requestBody.toString().getBytes();
@@ -181,8 +172,9 @@ public class ScheduleActivity extends AppCompatActivity {
         // Add the request to the RequestQueue.
         queue.add(jsonObjReq);
     }
-    private void startMeasuringNow(){
-        activityName=eventNameText.getText().toString();
+
+    private void prepareSchedulingProcedure() {
+        activityName = eventNameText.getText().toString();
         String endpoint = "addNewActivityIfNotExist";
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(ScheduleActivity.this);
@@ -191,39 +183,38 @@ public class ScheduleActivity extends AppCompatActivity {
         // Request a string response from the provided URL.
         JSONObject requestBody = new JSONObject();
         try {
-            requestBody.put("userID",userID);
+            requestBody.put("userID", userID);
             requestBody.put("category", getCategorySelected.toString());
             requestBody.put("name", eventNameText.getText().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, url,requestBody,
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST, url, requestBody,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
                             Log.d("addNewActivityIfNotExist", "Response body = " + response.get("activityID").toString());
-                            Intent measureNow = new Intent(ScheduleActivity.this, MeasuringActivity.class);
-                            measureNow.putExtra("userId", userID);
-                            measureNow.putExtra("deviceId", mobileID);
-                            measureNow.putExtra("sensorId", DEVICE_ID);
-                            measureNow.putExtra("activityId", response.get("activityID").toString());
-                            measureNow.putExtra("activityName", activityName);
-                            Log.d("addNewActivityIfNotExist", "onResponse: "+toDateText.toString());
-                            measureNow.putExtra("endDateTime","Measurement will end at: " +  toDateText.getText().toString());
-                            startActivity(measureNow);
-                        }catch (Exception e){
+                            activityID = response.get("activityID").toString();
+                            if (isStartNow == true) {
+                                //start measure now, call measuring activity
+                                startMeasuringNow();
+                            } else if (isStartNow == false) {
+                                //Add to schedule collection
+                                createNewSchedule();
+                            }
+
+                        } catch (Exception e) {
                             e.printStackTrace();
                             System.out.println(e.getMessage());
                         }
                     }
-                }, new Response.ErrorListener()
-        {
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("addNewActivityIfNotExist", "Error Response body = " + error.toString());
             }
-        }){
+        }) {
             @Override
             public byte[] getBody() {
                 return requestBody.toString().getBytes();
@@ -237,6 +228,19 @@ public class ScheduleActivity extends AppCompatActivity {
         // Add the request to the RequestQueue.
         queue.add(jsonObjReq);
     }
+
+    private void startMeasuringNow() {
+        Intent measureNow = new Intent(ScheduleActivity.this, MeasuringActivity.class);
+        measureNow.putExtra("userId", userID);
+        measureNow.putExtra("deviceId", mobileID);
+        measureNow.putExtra("sensorId", DEVICE_ID);
+        measureNow.putExtra("activityId", activityID);
+        measureNow.putExtra("activityName", activityName);
+        Log.d("addNewActivityIfNotExist", "onResponse: " + toDateText.toString());
+        measureNow.putExtra("endDateTime", "Measurement will end at: " + toDateText.getText().toString());
+        startActivity(measureNow);
+    }
+
     private void initStartNowSwitch() {
         startNowSwitch = findViewById(R.id.startNowSwitch);
         startNowSwitch.setOnClickListener(new View.OnClickListener() {
@@ -247,7 +251,7 @@ public class ScheduleActivity extends AppCompatActivity {
                     fromDateLayout.setVisibility(View.INVISIBLE);
                     fromDateContainer_nowLayout.setVisibility(View.VISIBLE);
                     isStartNow = true;
-                } else {
+                } else if(startNowSwitch.isChecked()==false){
                     fromDateLayout.setVisibility(View.VISIBLE);
                     fromDateContainer_nowLayout.setVisibility(View.INVISIBLE);
                     isStartNow = false;
@@ -316,7 +320,7 @@ public class ScheduleActivity extends AppCompatActivity {
         });
     }
 
-    private Calendar showDateTimeDialog(final EditText date_time_in) {
+    private Calendar showDateTimeDialog(final EditText date_time_in, boolean isStartDate) {
         final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Hong_Kong"), Locale.US);
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -334,6 +338,14 @@ public class ScheduleActivity extends AppCompatActivity {
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                         simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+08:00"));
                         date_time_in.setText(simpleDateFormat.format(calendar.getTime()));
+
+                        SimpleDateFormat dbDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                        if (isStartDate == true) {
+                            startDateStr = dbDateFormat.format(calendar.getTime());
+                        } else if (isStartDate == false) {
+                            endDateStr = dbDateFormat.format(calendar.getTime());
+                        }
+
                     }
                 };
 
@@ -369,7 +381,7 @@ public class ScheduleActivity extends AppCompatActivity {
         fromDateSelectorBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar c = showDateTimeDialog(fromDateText);
+                Calendar c = showDateTimeDialog(fromDateText, true);
                 startDate = c.getTime();
 //                DatePickerDialog datePickerDialog = new DatePickerDialog(
 //                        ScheduleActivity.this, new DatePickerDialog.OnDateSetListener() {
@@ -399,7 +411,7 @@ public class ScheduleActivity extends AppCompatActivity {
         toDateSelectorBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Calendar c = showDateTimeDialog(toDateText);
+                Calendar c = showDateTimeDialog(toDateText, false);
                 endDate = c.getTime();
 //                DatePickerDialog datePickerDialog = new DatePickerDialog(
 //                        ScheduleActivity.this, new DatePickerDialog.OnDateSetListener() {

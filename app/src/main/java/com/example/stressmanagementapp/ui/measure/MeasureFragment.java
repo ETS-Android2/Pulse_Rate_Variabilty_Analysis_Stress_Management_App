@@ -8,19 +8,13 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.stressmanagementapp.MainActivity;
 import com.example.stressmanagementapp.MeasuringActivity;
 import com.example.stressmanagementapp.R;
-import com.example.stressmanagementapp.ScheduleActivity;
-import com.example.stressmanagementapp.ViewScheduledMeasureActivity;
-import com.example.stressmanagementapp.ui.setting.SettingViewModel;
+import com.example.stressmanagementapp.ui.schedule.ScheduleActivity;
+import com.example.stressmanagementapp.ui.schedule.ViewScheduledMeasureActivity;
 
 public class MeasureFragment extends Fragment {
 

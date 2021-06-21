@@ -14,7 +14,7 @@ public class ActivityStatisticAdapter extends ArrayAdapter<ActivityStatisticMode
     Context mContext;
 
     public ActivityStatisticAdapter(ArrayList<ActivityStatisticModel> data, Context context) {
-        super(context, R.layout.row_item_activity_statistic, data);
+        super(context, R.layout.row_item_statistic, data);
         this.dataSet = data;
         this.mContext=context;
 

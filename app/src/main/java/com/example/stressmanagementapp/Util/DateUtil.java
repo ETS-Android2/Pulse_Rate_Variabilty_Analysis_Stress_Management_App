@@ -2,6 +2,8 @@ package com.example.stressmanagementapp.Util;
 
 import android.widget.DatePicker;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,6 +31,23 @@ public class DateUtil {
         calendar.set(year, month, day);
 
         return calendar.getTime();
+    }
+    public static SimpleDateFormat getSimpleDateFormat(){
+        return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    }
+    public static SimpleDateFormat humanReadableDateFormat(){
+        return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    }
+    public static String stringToSpecificDateFormatString(String dateStr){
+        SimpleDateFormat simpleDate = getSimpleDateFormat();
+        simpleDate.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+        Date date=null;
+        try {
+            date = simpleDate.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return simpleDate.format(date);
     }
 
 }
