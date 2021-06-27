@@ -1,4 +1,4 @@
-package com.example.stressmanagementapp.ui.monitoring;
+package com.example.stressmanagementapp.Function.monitoring;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

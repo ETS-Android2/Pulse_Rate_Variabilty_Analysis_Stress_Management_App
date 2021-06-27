@@ -1,4 +1,4 @@
-package com.example.stressmanagementapp.ui.schedule;
+package com.example.stressmanagementapp.Function.schedule;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

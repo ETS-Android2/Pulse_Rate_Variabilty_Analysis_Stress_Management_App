@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StressManagementApp">
         <activity
-            android:name=".MainActivity"
+            android:name=".Function.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,14 +21,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MeasuringActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name=".Function.measure.MeasuringActivity"
+            android:parentActivityName=".Function.MainActivity" />
         <activity
-            android:name=".ui.schedule.ScheduleActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name=".Function.schedule.ScheduleActivity"
+            android:parentActivityName=".Function.MainActivity" />
         <activity
-            android:name=".ui.schedule.ViewScheduledMeasureActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name=".Function.schedule.ViewScheduledMeasureActivity"
+            android:parentActivityName=".Function.MainActivity" />
     </application>
 
 </manifest>

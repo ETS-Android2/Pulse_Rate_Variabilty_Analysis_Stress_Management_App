@@ -1,4 +1,4 @@
-package com.example.stressmanagementapp.ui.statistic;
+package com.example.stressmanagementapp.Function.statistic;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

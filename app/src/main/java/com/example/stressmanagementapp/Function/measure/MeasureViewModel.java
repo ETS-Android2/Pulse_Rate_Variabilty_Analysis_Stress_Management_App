@@ -1,14 +1,14 @@
-package com.example.stressmanagementapp.ui.setting;
+package com.example.stressmanagementapp.Function.measure;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class SettingViewModel extends ViewModel {
+public class MeasureViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public SettingViewModel() {
+    public MeasureViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is notifications fragment");
     }

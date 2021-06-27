@@ -1,33 +1,56 @@
-package com.example.stressmanagementapp;
+package com.example.stressmanagementapp.Function.measure;
 
 import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.stressmanagementapp.Dialog.LoadingDialog;
 import com.example.stressmanagementapp.Chart.AbstractCustomLineChart;
 import com.example.stressmanagementapp.Chart.PPGLineChart.PPGLineChart;
+import com.example.stressmanagementapp.Function.schedule.ScheduleActivity;
 import com.example.stressmanagementapp.Model.PPG_Model;
+import com.example.stressmanagementapp.Model.PPG_Model_Sample;
+import com.example.stressmanagementapp.R;
 import com.example.stressmanagementapp.Util.CustomThread;
 import com.example.stressmanagementapp.Util.DateUtil;
 import com.github.mikephil.charting.charts.LineChart;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.reactivestreams.Publisher;
 
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.TimeZone;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
+import java.util.concurrent.locks.ReentrantLock;
 
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Function;
@@ -59,13 +82,18 @@ public class MeasuringActivity extends AppCompatActivity {
     private final LoadingDialog loadingDialog = new LoadingDialog(MeasuringActivity.this);
 
     //Measuring data
-    private boolean receiveFirstPPG,stopReceivePPGThread,stopUpdateLineChartThread;
+    private boolean receiveFirstPPG, stopReceivePPGThread, stopUpdateLineChartThread;
     private int ppgIndex;
     private CustomThread PPG_DataThread;
     private CustomThread updatePPG_LineChartThread;
 
     private JSONObject sensorData;
     private Socket mSocket;
+    private static JSONArray tempPPGSignal;
+    private static PPG_Model_Sample simpleInOneMinutes;
+    private static ReentrantLock lock;
+    private String apiPath;
+    private String mobileID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,20 +103,24 @@ public class MeasuringActivity extends AppCompatActivity {
 
         startMeasureBtn = findViewById(R.id.startMeasureBtn);
         stopMeasureBtn = findViewById(R.id.stopMeasureBtn);
+        apiPath = getString(R.string.api_path);
+        mobileID = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         initThreadState();
+        initMeasureRecord();
         setupLineChart();
         setupSensorApi();
         setupBtnListener();
-
+        tempPPGSignal = new JSONArray();
         Intent intent = getIntent();
-        if(intent!=null) {
+        lock = new ReentrantLock();
+        if (intent != null) {
             String endDate = intent.getStringExtra("endDateTime");
             String activityName = intent.getStringExtra("activityName");
-            TextView scheduleEndAt=findViewById(R.id.scheduleEndAt);
+            TextView scheduleEndAt = findViewById(R.id.scheduleEndAt);
             if (activityName == null) {
                 setTitle("Quick Measurement");
                 scheduleEndAt.setVisibility(View.INVISIBLE);
-            } else if(activityName != null){
+            } else if (activityName != null) {
                 setTitle("Measuring " + activityName);
                 scheduleEndAt.setVisibility(View.VISIBLE);
                 scheduleEndAt.setText(intent.getStringExtra("endDateTime"));
@@ -100,39 +132,95 @@ public class MeasuringActivity extends AppCompatActivity {
 //            measureNow.putExtra("activityId",response.toString());
 //            measureNow.putExtra("endDateTime",endDate);
         try {
-            mSocket = IO.socket("http://192.168.1.5:5000/realTimeData");
+            mSocket = IO.socket(this.getString(R.string.web_socket_endpoint));
             mSocket.connect();
-            mSocket.emit("PPG_Signal",1);
+//            mSocket.emit("PPG_Signal", 1);
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            System.out.println("ERROR "+e.getMessage());
+            System.out.println("ERROR " + e.getMessage());
         }
 
 
+    }
+
+    private void initMeasureRecord() {
+        this.userId = "6058ba30ba59f62decefbe3d";
+        this.measureId = String.format("%s_%s", userId, DateUtil.getDateStringInMeasuredRecord());
+        Log.i(TAG, "Measure Id = " + this.measureId);
+
+        String endpoint = "addMeasuredRecord";
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = apiPath + "/" + endpoint;
+        Log.d("initMeasureRecord", "Connecting url = " + url);
+        //Log.d("pushNewPPGSignalRecordTo_MeasuredRecord", "RequestBody = " + jsonRequestBody.toString());
+        List<String> list = new ArrayList<String>();
+        // Request a string response from the provided URL.
+        JSONObject jsonRequestBody = new JSONObject();
+        try {
+            jsonRequestBody.put("userID", userId);
+            jsonRequestBody.put("measureID", measureId);
+            jsonRequestBody.put("deviceID", mobileID);
+            jsonRequestBody.put("sensorID", DEVICE_ID);
+            jsonRequestBody.put("activityID", "60599a397194bc0568afdeca");
+            jsonRequestBody.put("activityName", "Sleep");
+            jsonRequestBody.put("category", "Rest");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        /*
+            "userID": "605995e57194bc0568afdec1",
+    "measureID": "6058bb78ba59f62decefbe3f_20210316T082708",
+    "deviceID": "1234",
+    "sensorID": "5678",
+    "activityID": "60599a397194bc0568afdeca",
+    "activityName": "sleep",
+    "category": "rest",
+    "startDateTime": "2021-05-09T08:27:08.000"
+
+        *?
+         */
+
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url, jsonRequestBody,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("initMeasureRecord", "onResponse: " + response.toString());
+                    }
+
+
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("initMeasureRecord", "Response body = " + error.toString());
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        queue.add(jsonRequest);
+
 
     }
-    private void initMeasureRecord(){
-        this.userId="6058ba30ba59f62decefbe3d";
-        this.measureId=String.format("%s_%s",userId, DateUtil.getDateStringInMeasuredRecord());
-        Log.i(TAG, "Measure Id = "+this.measureId);
-    }
+
     private void initThreadState() {
         stopReceivePPGThread = false;
         stopUpdateLineChartThread = false;
     }
 
-    private void setupLineChart(){
-        chart=findViewById(R.id.realTimeLineChart);
+    private void setupLineChart() {
+        chart = findViewById(R.id.realTimeLineChart);
         ppgLineChart = new PPGLineChart(chart);
     }
+
     private void setupBtnListener() {
         this.startMeasureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 try {
                     loadingDialog.startLoadingDialog();
-                    stopReceivePPGThread=false;
-                    stopUpdateLineChartThread=false;
+                    stopReceivePPGThread = false;
+                    stopUpdateLineChartThread = false;
                     autoConnectSensorAndStartMeasuring();
                 } catch (Exception ex) {
                     loadingDialog.dismissDialog();
@@ -149,8 +237,8 @@ public class MeasuringActivity extends AppCompatActivity {
                         api.disconnectFromDevice(DEVICE_ID);
                         PPG_DataThread.stopThread();
                         updatePPG_LineChartThread.stopThread();
-                        stopReceivePPGThread=true;
-                        stopUpdateLineChartThread=true;
+                        stopReceivePPGThread = true;
+                        stopUpdateLineChartThread = true;
                         initThreadState();
                         loadingDialog.dismissDialog();
                         ppgLineChart.chart.clear();
@@ -272,8 +360,8 @@ public class MeasuringActivity extends AppCompatActivity {
 
     private void subscribePPG() {
         if (ppgDisposable == null) {
-            ppgIndex=0;
-            receiveFirstPPG=false;
+            ppgIndex = 0;
+            receiveFirstPPG = false;
             loadingDialog.dismissDialog();
             feedMultiple();
         } else {
@@ -281,14 +369,15 @@ public class MeasuringActivity extends AppCompatActivity {
             ppgDisposable = null;
         }
     }
+
     private void feedMultiple() {
-        if(updatePPG_LineChartThread!=null)
+        if (updatePPG_LineChartThread != null)
             updatePPG_LineChartThread.stopThread();
-        if(PPG_DataThread!=null)
+        if (PPG_DataThread != null)
             PPG_DataThread.stopThread();
 
-        PPG_DataThread=initPPGDataThread(); //Thread to update received data to PPG model object
-        updatePPG_LineChartThread=initUpdatePPG_RealTimeLineChart(); // Thread to update line chart
+        PPG_DataThread = initPPGDataThread(); //Thread to update received data to PPG model object
+        updatePPG_LineChartThread = initUpdatePPG_RealTimeLineChart(); // Thread to update line chart
 
         PPG_DataThread.startThread();
         updatePPG_LineChartThread.startThread();
@@ -296,35 +385,148 @@ public class MeasuringActivity extends AppCompatActivity {
 
     private PPG_Model ppgModel;
 
-    private CustomThread initPPGDataThread(){
+    private void pushNewPPGRecordInMinute(JSONObject jsonRequestBody) {
+        String endpoint = "pushNewPPGSignalRecordTo_MeasuredRecord";
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = apiPath + "/" + endpoint;
+        Log.d("pushNewPPGSignalRecordTo_MeasuredRecord", "Connecting url = " + url);
+        //Log.d("pushNewPPGSignalRecordTo_MeasuredRecord", "RequestBody = " + jsonRequestBody.toString());
+        List<String> list = new ArrayList<String>();
+        // Request a string response from the provided URL.
+
+
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url, jsonRequestBody,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("pushNewPPGSignalRecordTo_MeasuredRecord", "onResponse: " + response.toString());
+                    }
+
+
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("getAllActivityCategory", "Response body = " + error.toString());
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        queue.add(jsonRequest);
+    }
+
+    class InsertPPGSignalToMongoDB extends TimerTask {
+        public void run() {
+            lock.lock();
+            try {
+                Log.d("InsertPPGSignalToMongoDB", " JSONArray size = " + tempPPGSignal.length() + "\n" + tempPPGSignal.toString());
+                String json = new Gson().toJson(tempPPGSignal);
+                JSONObject jsonRequestBody = new JSONObject();
+                jsonRequestBody.put("ppgSignalSet", tempPPGSignal);
+                if (tempPPGSignal.length() != 0) {
+                    //pushNewPPGRecordInMinute(jsonRequestBody);
+                    tempPPGSignal = new JSONArray();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("InsertPPGSignalToMongoDB", "run:  " + e.getMessage());
+            } finally {
+                lock.unlock();
+            }
+            Log.d("InsertPPGSignalToMongoDB", "Insert JSONArray to mongodb");
+        }
+    }
+
+    class InsertPPGSignalToWebSocket extends TimerTask {
+        public void run() {
+            lock.lock();
+            try {
+                Log.d("InsertPPGSignalToWebSocket", " JSONArray size = " + tempPPGSignal.length() + "\n" + tempPPGSignal.toString());
+
+                String json = new Gson().toJson(tempPPGSignal);
+                JSONObject jsonRequestBody = new JSONObject();
+//                jsonRequestBody.put("ppgSignalSet", tempPPGSignal);
+                //pushNewPPGRecordInMinute(jsonRequestBody);
+                try {
+                    if(tempPPGSignal.length() > 5000){
+                        Log.d("InsertPPGSignalToWebSocket", "Emit ");
+                        mSocket.emit("PPG_Signal", tempPPGSignal.toString());
+                    }
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    System.out.println("ERROR during emitting message");
+                }
+                tempPPGSignal = new JSONArray();
+
+            } catch (
+                    Exception e) {
+                e.printStackTrace();
+                Log.e("InsertPPGSignalToWebSocket", "run:  " + e.getMessage());
+            } finally {
+                lock.unlock();
+            }
+            Log.d("InsertPPGSignalToWebSocket", "Insert JSONArray to websocket");
+        }
+
+    }
+
+    public void addPPGSignalToThisMinute(JSONObject ppgSignal) {
+        lock.lock();
+        try {
+            tempPPGSignal.put(ppgSignal);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    //    public void addPPGSignalToThisMinute(PPG_Model ppgSignal) {
+//        lock.lock();
+//        try {
+//            simpleInOneMinutes.getPpgList().add(ppgSignal);
+//        } finally {
+//            lock.unlock();
+//        }
+//    }
+    private CustomThread initPPGDataThread() {
         Runnable getPPGDataRunnable;
         Thread getPPGData_OnUIThread;
 
+        // And From your main() method or any other method
+        Timer timer = new Timer();
+        //timer.schedule(new InsertPPGSignalToMongoDB(), 0, 60000);
+        simpleInOneMinutes = new PPG_Model_Sample();
+        timer.schedule(new InsertPPGSignalToWebSocket(), 10000, 60000);
+        //timer.schedule(new InsertPPGSignalToWebSocket(), 5000, 5000);
         getPPGDataRunnable = (new Runnable() {
             @Override
             public void run() {
-                if( stopReceivePPGThread==false && ppgDisposable == null ) {
-                    ppgDisposable = api.requestPpgSettings(DEVICE_ID).toFlowable().flatMap((Function<PolarSensorSetting, Publisher<PolarOhrPPGData>>) polarPPGSettings -> api.startOhrPPGStreaming(DEVICE_ID,polarPPGSettings.maxSettings())).subscribe(
+                if (stopReceivePPGThread == false && ppgDisposable == null) {
+                    ppgDisposable = api.requestPpgSettings(DEVICE_ID).toFlowable().flatMap((Function<PolarSensorSetting, Publisher<PolarOhrPPGData>>) polarPPGSettings -> api.startOhrPPGStreaming(DEVICE_ID, polarPPGSettings.maxSettings())).subscribe(
                             polarOhrPPGData -> {
-                                for( PolarOhrPPGData.PolarOhrPPGSample sample : polarOhrPPGData.samples ){
+                                for (PolarOhrPPGData.PolarOhrPPGSample sample : polarOhrPPGData.samples) {
                                     SimpleDateFormat dft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
                                     Date currentTime = new Date(System.currentTimeMillis());
-                                    ppgModel=new PPG_Model(sample,dft.format(currentTime),userId,measureId);
-                                    Log.d(TAG,"Detect ppgModel: "+ppgModel.toJsonObject().toString());
-                                    try {
-                                        mSocket.emit("PPG_Signal",ppgModel.toJsonObject().toString()+"\n");
-                                        System.out.println("emitted");
-                                    }catch (Exception ex){
-                                        ex.printStackTrace();
-                                        System.out.println("ERROR during emitting message");
-                                    }
+                                    ppgModel = new PPG_Model(sample, dft.format(currentTime), userId, measureId);
+                                    addPPGSignalToThisMinute(ppgModel.toJsonObject());
+                                    //addPPGSignalToThisMinute(ppgModel.toJsonObject());
+                                    //Log.d(TAG,"Detect ppgModel: "+ppgModel.toJsonObject().toString());
+
+//                                    try {
+//                                        mSocket.emit("PPG_Signal", ppgModel.toJsonObject().toString() + "\n");
+//                                        //System.out.println("emitted");
+//                                    } catch (Exception ex) {
+//                                        ex.printStackTrace();
+//                                        System.out.println("ERROR during emitting message");
+//                                    }
                                 }
-                                if(receiveFirstPPG==true && loadingDialog.getLoadingDialog().isShowing()==true)
+                                if (receiveFirstPPG == true && loadingDialog.getLoadingDialog().isShowing() == true)
                                     loadingDialog.dismissDialog();
                             },
 
-                            throwable -> Log.e(TAG,"getPPGDataRunnable() "+throwable.getMessage()),
-                            () -> Log.d(TAG,"complete")
+                            throwable -> Log.e(TAG, "getPPGDataRunnable() " + throwable.getMessage()),
+                            () -> Log.d(TAG, "complete")
                     );
 //                    if (dataSampleID%5==0 && (ppgList!=null&&ppgList.size()>0)){
 //                        ++slidingWindowIndex;
@@ -352,16 +554,16 @@ public class MeasuringActivity extends AppCompatActivity {
                 }
             }
         });
-        return new CustomThread(getPPGDataRunnable,getPPGData_OnUIThread);
+        return new CustomThread(getPPGDataRunnable, getPPGData_OnUIThread);
     }
-    private CustomThread initUpdatePPG_RealTimeLineChart(){
+
+    private CustomThread initUpdatePPG_RealTimeLineChart() {
         Runnable updateLineChartRunnable;
         Thread updateLineChart_OnUIThread;
         updateLineChartRunnable = (new Runnable() {
             @Override
             public void run() {
-                if(stopReceivePPGThread==false  && ppgModel!=null) {
-                    Log.d(TAG, "run: " + ppgModel.toString());
+                if (stopReceivePPGThread == false && ppgModel != null) {
                     sensorData = new JSONObject();
                     ppgLineChart.addEntry(ppgModel);
                 }
@@ -373,8 +575,8 @@ public class MeasuringActivity extends AppCompatActivity {
                 for (int i = 0; i < 1000; i++) {
                     //Assign the updateLineChartRunnable to UI Thread
                     runOnUiThread(updateLineChartRunnable);
-                    if(i==999)
-                        i=0;
+                    if (i == 999)
+                        i = 0;
                     try {
                         Thread.sleep(50);
                     } catch (InterruptedException e) {
@@ -384,9 +586,10 @@ public class MeasuringActivity extends AppCompatActivity {
                 }
             }
         });
-        return new CustomThread(updateLineChartRunnable,updateLineChart_OnUIThread);
+        return new CustomThread(updateLineChartRunnable, updateLineChart_OnUIThread);
     }
-    public String getSensorID(){
+
+    public String getSensorID() {
         return this.DEVICE_ID;
     }
 }

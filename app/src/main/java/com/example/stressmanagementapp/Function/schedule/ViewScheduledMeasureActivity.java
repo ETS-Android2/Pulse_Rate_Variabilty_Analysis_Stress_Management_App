@@ -1,4 +1,4 @@
-package com.example.stressmanagementapp.ui.schedule;
+package com.example.stressmanagementapp.Function.schedule;
 
 import android.content.res.Resources;
 import android.os.Bundle;

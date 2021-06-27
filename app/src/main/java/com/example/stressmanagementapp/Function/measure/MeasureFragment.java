@@ -1,4 +1,4 @@
-package com.example.stressmanagementapp.ui.measure;
+package com.example.stressmanagementapp.Function.measure;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,10 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.stressmanagementapp.MeasuringActivity;
 import com.example.stressmanagementapp.R;
-import com.example.stressmanagementapp.ui.schedule.ScheduleActivity;
-import com.example.stressmanagementapp.ui.schedule.ViewScheduledMeasureActivity;
+import com.example.stressmanagementapp.Function.schedule.ScheduleActivity;
+import com.example.stressmanagementapp.Function.schedule.ViewScheduledMeasureActivity;
 
 public class MeasureFragment extends Fragment {
 

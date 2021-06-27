@@ -1,4 +1,4 @@
-package com.example.stressmanagementapp.ui.schedule;
+package com.example.stressmanagementapp.Function.schedule;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -38,10 +38,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.stressmanagementapp.MeasuringActivity;
+import com.example.stressmanagementapp.Function.measure.MeasuringActivity;
 import com.example.stressmanagementapp.R;
 import com.example.stressmanagementapp.Util.DateUtil;
 
+import org.bson.BsonObjectId;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -121,6 +122,7 @@ public class ScheduleActivity extends AppCompatActivity {
         Log.d("addSchedule", "Connecting url = " + url);
         // Request a string response from the provided URL.
         JSONObject requestBody = new JSONObject();
+
         try {
             requestBody.put("ownerInUserCollection", userID);
             requestBody.put("activityIdInActivityCollection", activityID);
@@ -137,8 +139,9 @@ public class ScheduleActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            Log.d("addNewActivityIfNotExist", "Response body = " + response.get("success").toString());
+                            Log.d("createNewSchedule", "Response body = " + response.get("_id for inserted schedule").toString());
                             AlertDialog.Builder builder = new AlertDialog.Builder(ScheduleActivity.this);
+                            measureID=response.get("_id for inserted schedule").toString();
                             builder.setMessage("Created new schedule")
                                     .setCancelable(false)
                                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -173,6 +176,12 @@ public class ScheduleActivity extends AppCompatActivity {
         queue.add(jsonObjReq);
     }
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        System.out.println("onDestroy");
+    }
     private void prepareSchedulingProcedure() {
         activityName = eventNameText.getText().toString();
         String endpoint = "addNewActivityIfNotExist";
@@ -198,6 +207,7 @@ public class ScheduleActivity extends AppCompatActivity {
                             activityID = response.get("activityID").toString();
                             if (isStartNow == true) {
                                 //start measure now, call measuring activity
+                                createNewSchedule();
                                 startMeasuringNow();
                             } else if (isStartNow == false) {
                                 //Add to schedule collection

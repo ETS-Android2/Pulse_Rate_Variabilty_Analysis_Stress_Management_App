@@ -1,4 +1,4 @@
-package com.example.stressmanagementapp.ui.statistic.activity;
+package com.example.stressmanagementapp.Function.statistic.activity;
 
 import com.example.stressmanagementapp.Model.MeasuredRecordModel;
 

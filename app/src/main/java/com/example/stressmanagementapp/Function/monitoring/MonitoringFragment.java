@@ -1,4 +1,4 @@
-package com.example.stressmanagementapp.ui.monitoring;
+package com.example.stressmanagementapp.Function.monitoring;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

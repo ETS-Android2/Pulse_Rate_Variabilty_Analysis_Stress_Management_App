@@ -1,14 +1,14 @@
-package com.example.stressmanagementapp.ui.statistic;
+package com.example.stressmanagementapp.Function.setting;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class StatisticViewModel extends ViewModel {
+public class SettingViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public StatisticViewModel() {
+    public SettingViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is notifications fragment");
     }

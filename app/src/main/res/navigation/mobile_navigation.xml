@@ -7,24 +7,24 @@
 
     <fragment
         android:id="@+id/navigation_measure"
-        android:name="com.example.stressmanagementapp.ui.measure.MeasureFragment"
+        android:name="com.example.stressmanagementapp.Function.measure.MeasureFragment"
         android:label="@string/title_measure"
         tools:layout="@layout/fragment_measure" />
 
     <fragment
         android:id="@+id/navigation_monitoring"
-        android:name="com.example.stressmanagementapp.ui.monitoring.MonitoringFragment"
+        android:name="com.example.stressmanagementapp.Function.monitoring.MonitoringFragment"
         android:label="@string/title_monitoring"
         tools:layout="@layout/fragment_monitoring_norecord" />
 
     <fragment
         android:id="@+id/navigation_statistic"
-        android:name="com.example.stressmanagementapp.ui.statistic.StatisticFragment"
+        android:name="com.example.stressmanagementapp.Function.statistic.StatisticFragment"
         android:label="@string/title_statistic"
         tools:layout="@layout/fragment_statistic_activity_result" />
     <fragment
         android:id="@+id/navigation_setting"
-        android:name="com.example.stressmanagementapp.ui.setting.SettingFragment"
+        android:name="com.example.stressmanagementapp.Function.setting.SettingFragment"
         android:label="@string/title_setting"
         tools:layout="@layout/fragment_setting" />
 

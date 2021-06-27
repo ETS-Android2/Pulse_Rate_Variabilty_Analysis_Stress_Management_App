@@ -1,7 +1,8 @@
-package com.example.stressmanagementapp;
+package com.example.stressmanagementapp.Function;
 
 import android.os.Bundle;
 
+import com.example.stressmanagementapp.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
