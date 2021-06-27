@@ -56,6 +56,7 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Function;
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import polar.com.sdk.api.PolarBleApi;
 import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.PolarBleApiDefaultImpl;
@@ -134,7 +135,7 @@ public class MeasuringActivity extends AppCompatActivity {
         try {
             mSocket = IO.socket(this.getString(R.string.web_socket_endpoint));
             mSocket.connect();
-//            mSocket.emit("PPG_Signal", 1);
+            mSocket.on("getResult", onGetResult);
         } catch (URISyntaxException e) {
             e.printStackTrace();
             System.out.println("ERROR " + e.getMessage());
@@ -142,6 +143,30 @@ public class MeasuringActivity extends AppCompatActivity {
 
 
     }
+
+    private Emitter.Listener onGetResult = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            MeasuringActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        int avgBPM = data.getInt("avgBPM");
+                        int avgPPI = data.getInt("avgPPI");
+                        int minPPI = data.getInt("minPPI");
+                        int maxPPI = data.getInt("maxPPI");
+                        Log.d("InsertPPGSignalToWebSocket", "call: avgBPM=" + avgBPM + " avgPPI=" + avgPPI
+                        + " minPPI="+minPPI+" maxPPI="+maxPPI
+                        );
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+        }
+    };
 
     private void initMeasureRecord() {
         this.userId = "6058ba30ba59f62decefbe3d";
@@ -449,7 +474,7 @@ public class MeasuringActivity extends AppCompatActivity {
 //                jsonRequestBody.put("ppgSignalSet", tempPPGSignal);
                 //pushNewPPGRecordInMinute(jsonRequestBody);
                 try {
-                    if(tempPPGSignal.length() > 5000){
+                    if (tempPPGSignal.length() > 5000) {
                         Log.d("InsertPPGSignalToWebSocket", "Emit ");
                         mSocket.emit("PPG_Signal", tempPPGSignal.toString());
                     }
@@ -497,7 +522,7 @@ public class MeasuringActivity extends AppCompatActivity {
         Timer timer = new Timer();
         //timer.schedule(new InsertPPGSignalToMongoDB(), 0, 60000);
         simpleInOneMinutes = new PPG_Model_Sample();
-        timer.schedule(new InsertPPGSignalToWebSocket(), 10000, 60000);
+        timer.schedule(new InsertPPGSignalToWebSocket(), 0, 60000);
         //timer.schedule(new InsertPPGSignalToWebSocket(), 5000, 5000);
         getPPGDataRunnable = (new Runnable() {
             @Override
