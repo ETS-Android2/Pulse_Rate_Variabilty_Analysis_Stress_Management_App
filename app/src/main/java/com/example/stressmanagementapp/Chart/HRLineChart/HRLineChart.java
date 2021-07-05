@@ -22,7 +22,7 @@ public class HRLineChart extends AbstractCustomLineChart {
         super(chart);
         this.chart=chart;
         // enable description text
-        chart.getDescription().setEnabled(true);
+        chart.getDescription().setEnabled(false);
 
         // enable touch gestures
         chart.setTouchEnabled(true);
@@ -37,10 +37,10 @@ public class HRLineChart extends AbstractCustomLineChart {
         chart.setPinchZoom(true);
 
         // set an alternative background color
-        chart.setBackgroundColor(Color.LTGRAY);
+        chart.setBackgroundColor(Color.BLACK);
 
         LineData data = new LineData();
-        data.setValueTextColor(Color.WHITE);
+        data.setValueTextColor(Color.RED);
 
         // add empty data
         chart.setData(data);
@@ -51,7 +51,7 @@ public class HRLineChart extends AbstractCustomLineChart {
         // modify the legend ...
         l.setForm(Legend.LegendForm.LINE);
         l.setTypeface(tfLight);
-        l.setTextColor(Color.WHITE);
+        l.setTextColor(Color.RED);
 
         XAxis xl = chart.getXAxis();
         xl.setTypeface(tfLight);
@@ -62,6 +62,7 @@ public class HRLineChart extends AbstractCustomLineChart {
 
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setTypeface(tfLight);
+
         leftAxis.setTextColor(Color.WHITE);
         leftAxis.setDrawGridLines(false);
 

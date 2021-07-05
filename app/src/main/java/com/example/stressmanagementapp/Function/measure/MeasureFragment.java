@@ -30,7 +30,7 @@ public class MeasureFragment extends Fragment {
         btn_quickMeasurement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), MeasuringActivity.class);
+                Intent intent = new Intent(getActivity(), NewMeasuringActivity.class);
                 startActivity(intent);
             }
         });

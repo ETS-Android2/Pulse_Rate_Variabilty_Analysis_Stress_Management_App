@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Function.measure.MeasuringActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/progressbarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout_StartStop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_constraintHeight_percent="0.4">
+
+        <TextView
+            android:id="@+id/stressLevelLabel2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stress Level"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@+id/stressLevelValue2"
+            app:layout_constraintStart_toStartOf="@+id/stressLevelValue2"
+            app:layout_constraintTop_toBottomOf="@+id/stressLevelValue2" />
+
+        <TextView
+            android:id="@+id/stressLevelValue2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="3 (LOW)"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/lasthrlabel" />
+
+        <TextView
+            android:id="@+id/progress_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="36sp"
+            app:layout_constraintBottom_toBottomOf="@+id/circular_determinative_pb"
+            app:layout_constraintEnd_toEndOf="@+id/circular_determinative_pb"
+            app:layout_constraintStart_toStartOf="@+id/circular_determinative_pb"
+            app:layout_constraintTop_toTopOf="@+id/circular_determinative_pb"
+            tools:text="50%" />
+
+        <ProgressBar
+            android:id="@+id/circular_determinative_pb"
+            android:layout_width="181dp"
+            android:layout_height="235dp"
+            android:indeterminateOnly="false"
+            android:progressDrawable="@drawable/pb_circular_determinative"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView17"
+            tools:progress="70" />
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="No. of Sample Measured:"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/lasthrlabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Avg. HR"
+            app:layout_constraintStart_toEndOf="@+id/circular_determinative_pb"
+            app:layout_constraintTop_toTopOf="@+id/circular_determinative_pb" />
+
+        <TextView
+            android:id="@+id/lastAvgPPILabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Avg. PPI"
+            app:layout_constraintStart_toStartOf="@+id/lasthrlabel"
+            app:layout_constraintTop_toBottomOf="@+id/lasthrlabel" />
+
+        <TextView
+            android:id="@+id/lastMaxPPILabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Max. PPI"
+            app:layout_constraintStart_toStartOf="@+id/lastAvgPPILabel"
+            app:layout_constraintTop_toBottomOf="@+id/lastAvgPPILabel" />
+
+        <TextView
+            android:id="@+id/lastMinPPILabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Min. PPI"
+            app:layout_constraintStart_toStartOf="@+id/lastMaxPPILabel"
+            app:layout_constraintTop_toBottomOf="@+id/lastMaxPPILabel" />
+
+        <TextView
+            android:id="@+id/lastHRValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="82"
+            app:layout_constraintStart_toEndOf="@+id/lasthrlabel"
+            app:layout_constraintTop_toTopOf="@+id/lasthrlabel" />
+
+        <TextView
+            android:id="@+id/lastMeasureTimeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Last sample recorded:"
+            app:layout_constraintStart_toStartOf="@+id/lastMinPPILabel"
+            app:layout_constraintTop_toBottomOf="@+id/lastMinPPILabel" />
+
+        <TextView
+            android:id="@+id/measureStartAtLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Start at:"
+            app:layout_constraintStart_toStartOf="@+id/lastMeasureTimeLabel"
+            app:layout_constraintTop_toBottomOf="@+id/lastSampleTime" />
+
+        <TextView
+            android:id="@+id/lastSampleTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2021-06-07 21:32"
+            app:layout_constraintStart_toStartOf="@+id/lastMeasureTimeLabel"
+            app:layout_constraintTop_toBottomOf="@+id/lastMeasureTimeLabel" />
+
+        <TextView
+            android:id="@+id/measureStartAt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2021-06-07 21:31"
+            app:layout_constraintStart_toStartOf="@+id/measureStartAtLabel"
+            app:layout_constraintTop_toBottomOf="@+id/measureStartAtLabel" />
+
+        <TextView
+            android:id="@+id/willEndLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Will end at:"
+            app:layout_constraintStart_toStartOf="@+id/measureStartAt"
+            app:layout_constraintTop_toBottomOf="@+id/measureStartAt" />
+
+        <TextView
+            android:id="@+id/lastAvgPPI"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="680"
+            app:layout_constraintStart_toEndOf="@+id/lastAvgPPILabel"
+            app:layout_constraintTop_toTopOf="@+id/lastAvgPPILabel" />
+
+        <TextView
+            android:id="@+id/lastMaxPPI"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="800"
+            app:layout_constraintStart_toEndOf="@+id/lastMaxPPILabel"
+            app:layout_constraintTop_toTopOf="@+id/lastMaxPPILabel" />
+
+        <TextView
+            android:id="@+id/lastMinPPI"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="650"
+            app:layout_constraintStart_toEndOf="@+id/lastMinPPILabel"
+            app:layout_constraintTop_toTopOf="@+id/lastMinPPILabel" />
+
+        <TextView
+            android:id="@+id/measureEndDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2021-06-07 21:41"
+            app:layout_constraintStart_toStartOf="@+id/willEndLabel"
+            app:layout_constraintTop_toBottomOf="@+id/willEndLabel" />
+
+        <TextView
+            android:id="@+id/measuredSampleNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="0"
+            app:layout_constraintStart_toEndOf="@+id/textView17"
+            app:layout_constraintTop_toTopOf="@+id/textView17" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout_StartStop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progressbarLayout">
+
+        <Button
+            android:id="@+id/stopMeasureBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:background="#000000"
+            android:text="@string/btn_stop_measure_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/startMeasureBtn"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/startMeasureBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:background="#019AE8"
+            android:text="@string/btn_start_measure_label"
+            app:layout_constraintEnd_toStartOf="@+id/stopMeasureBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout_StartStop"
+        tools:layout_editor_absoluteX="0dp">
+
+        <ListView
+            android:id="@+id/measuredResultList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

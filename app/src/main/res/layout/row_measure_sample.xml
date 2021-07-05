@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/stressLevelLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stress Level"
+        app:layout_constraintEnd_toEndOf="@+id/stressLevelValue"
+        app:layout_constraintStart_toStartOf="@+id/stressLevelValue"
+        app:layout_constraintTop_toBottomOf="@+id/stressLevelValue" />
+
+    <TextView
+        android:id="@+id/stressLevelValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="28dp"
+        android:text="3 (LOW)"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/avgPPI" />
+
+    <TextView
+        android:id="@+id/lastRecordTimeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Record time"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/lastRecordTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="2021-06-28 07:01"
+        app:layout_constraintStart_toEndOf="@+id/lastRecordTimeLabel"
+        app:layout_constraintTop_toTopOf="@+id/lastRecordTimeLabel" />
+
+    <TextView
+        android:id="@+id/avgHRLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Avg. HR"
+        app:layout_constraintStart_toStartOf="@+id/lastRecordTimeLabel"
+        app:layout_constraintTop_toBottomOf="@+id/lastRecordTimeLabel" />
+
+    <TextView
+        android:id="@+id/avgHR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="75"
+        app:layout_constraintStart_toEndOf="@+id/avgHRLabel"
+        app:layout_constraintTop_toTopOf="@+id/avgHRLabel" />
+
+    <TextView
+        android:id="@+id/avgPPILabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:text="Avg. PPI"
+        app:layout_constraintStart_toStartOf="@+id/lastRecordTime"
+        app:layout_constraintTop_toBottomOf="@+id/lastRecordTime" />
+
+    <TextView
+        android:id="@+id/avgPPI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="725 ms"
+        app:layout_constraintStart_toEndOf="@+id/avgPPILabel"
+        app:layout_constraintTop_toTopOf="@+id/avgPPILabel" />
+
+    <TextView
+        android:id="@+id/minPPILabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Min. PPI"
+        app:layout_constraintStart_toStartOf="@+id/avgPPILabel"
+        app:layout_constraintTop_toBottomOf="@+id/avgPPILabel" />
+
+    <TextView
+        android:id="@+id/minPPI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="680 ms"
+        app:layout_constraintStart_toEndOf="@+id/minPPILabel"
+        app:layout_constraintTop_toTopOf="@+id/minPPILabel" />
+
+    <TextView
+        android:id="@+id/maxPPILabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Max. PPI"
+        app:layout_constraintStart_toStartOf="@+id/minPPILabel"
+        app:layout_constraintTop_toBottomOf="@+id/minPPILabel" />
+
+    <TextView
+        android:id="@+id/maxPPI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="780 ms"
+        app:layout_constraintStart_toEndOf="@+id/maxPPILabel"
+        app:layout_constraintTop_toTopOf="@+id/maxPPILabel" />
+</androidx.constraintlayout.widget.ConstraintLayout>

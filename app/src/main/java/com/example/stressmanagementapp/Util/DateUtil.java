@@ -1,9 +1,11 @@
 package com.example.stressmanagementapp.Util;
 
+import android.os.Build;
 import android.widget.DatePicker;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
@@ -19,7 +21,7 @@ public class DateUtil {
         int minute = now.get(Calendar.MINUTE);
         int second = now.get(Calendar.SECOND);
         int millis = now.get(Calendar.MILLISECOND);
-        String dateStrInMeasuredRecord = String.format("%s%s%sT%s%s%s%s",year,month,day,hour,minute,second,millis);
+        String dateStrInMeasuredRecord = String.format("%s-%s-%sT%s%s%s%s",year,month,day,hour,minute,second,millis);
         return dateStrInMeasuredRecord;
     }
     public static java.util.Date getDateFromDatePicker(DatePicker datePicker){
@@ -48,6 +50,19 @@ public class DateUtil {
             e.printStackTrace();
         }
         return simpleDate.format(date);
+    }
+    public static String getCurrentDateWithUTC(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return String.valueOf(Clock.systemUTC().instant());
+        }
+        return null;
+    }
+
+    public static String getCurrentLocalDate(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            return String.valueOf(LocalDateTime.now());
+        }
+        return null;
     }
 
 }

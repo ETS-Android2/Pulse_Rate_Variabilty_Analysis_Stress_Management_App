@@ -30,5 +30,8 @@ public class LoadingDialog {
     public void dismissDialog(){
         dialog.dismiss();
     }
+    public boolean isDisplaying(){
+        return dialog.isShowing();
+    }
 
 }
