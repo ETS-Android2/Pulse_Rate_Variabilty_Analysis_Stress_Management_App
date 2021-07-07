@@ -1,7 +1,10 @@
 package com.example.stressmanagementapp.Function.measure;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,9 +51,26 @@ public class MeasureFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("You don't have Resting HR and PPI record for your profile, measure now?")
+                .setCancelable(false)
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
+                    }
+                })
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //do things
+                        Intent intent = new Intent(getActivity(), NewMeasuringActivity.class);
+                        intent.putExtra("isMeasureRestingData",true);
+                        startActivityForResult(intent,-1);
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
 
         return root;
     }
-
 }
