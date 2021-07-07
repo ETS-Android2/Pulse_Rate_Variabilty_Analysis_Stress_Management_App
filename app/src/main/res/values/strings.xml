@@ -50,9 +50,6 @@
         <item>Date (DSC)</item>
         <item>Activity Name(ASC)</item>
         <item>Activity Name(DSC)</item>
-        <item>Scheduled</item>
-        <item>Running</item>
-        <item>Completed</item>
     </string-array>
     <string-array name="measuredRecordSortBy">
         <item>Date (ASC)</item>

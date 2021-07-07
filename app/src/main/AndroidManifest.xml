@@ -25,7 +25,7 @@
             android:parentActivityName=".Function.MainActivity" />
         <activity
             android:name=".Function.measure.NewMeasuringActivity"
-            android:parentActivityName=".Function.MainActivity " />
+            android:parentActivityName=".Function.MainActivity" />
         <activity
             android:name=".Function.schedule.ScheduleActivity"
             android:parentActivityName=".Function.MainActivity" />

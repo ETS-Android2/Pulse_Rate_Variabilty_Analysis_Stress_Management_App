@@ -17,6 +17,7 @@
         android:text="Watch TV"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@android:color/black"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -63,6 +64,7 @@
         android:layout_centerVertical="true"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
+        android:clickable="true"
         android:src="@android:drawable/ic_delete"
         app:layout_constraintEnd_toStartOf="@+id/schedule_editBtn"
         app:layout_constraintTop_toTopOf="parent" />
@@ -76,6 +78,7 @@
         android:layout_centerVertical="true"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
+        android:clickable="true"
         android:src="@android:drawable/ic_menu_edit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -12,7 +12,10 @@ import com.example.stressmanagementapp.Model.MeasuredResult;
 import com.example.stressmanagementapp.R;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class MeasureResultListAdapter extends ArrayAdapter {
     private Activity context;
@@ -40,11 +43,18 @@ public class MeasureResultListAdapter extends ArrayAdapter {
         try {
             MeasuredResult result = measuredResults.get(position);
 
-            Log.d("viewSchedule", "getView in list position: " + position + "-->" + result.toString());
-            //Gson g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
-            //ScheduleModel schedule = g.fromJson(queryResult.get(position), ScheduleModel.class);
+            Log.d("viewMeasureRecord", "getView in list position: " + position + "-->" + result.toString());
+            Log.d("viewMeasureRecord", "lastRecordTime= "+result.getTimestamp().toString());
 
-            lastRecordTime.setText(result.getTimestamp().toString());
+            SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            newFormat.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+            String newFromDate = newFormat.format(result.getTimestamp());
+            Log.d("viewMeasureRecord", "last formatted RecordTime= "+newFromDate);
+
+            lastRecordTime.setText(newFromDate);
+
+
+            //lastRecordTime.setText(result.getTimestamp().toString());
             avgHR.setText(String.valueOf((int)result.getAvg_overall_bpm())+" bpm");
             avgPPI.setText(String.valueOf((int)result.getAvg_overall_ppi())+" ms");
             minPPI.setText(String.valueOf((int)result.getMin_ppi())+" ms");

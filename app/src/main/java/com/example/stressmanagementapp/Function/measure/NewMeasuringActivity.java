@@ -1,6 +1,8 @@
 package com.example.stressmanagementapp.Function.measure;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -104,13 +106,17 @@ public class NewMeasuringActivity extends AppCompatActivity {
     private static PPG_Model_Sample simpleInOneMinutes;
     private static ReentrantLock lock;
     private String apiPath;
-    private String mobileID;
+    private String mobileID,category, activityName,activityID;
     private double remainingTimeInPercentageOfMinute;
     private float timeCountDown = 60;
     private TextView progress_tv,measuredSampleNo,lastHRValue,lastAvgPPI,lastMaxPPI,lastMinPPI,lastSampleTime,measureStartAt,measureEndDate;
     private int measuredSample=0;
     private ListView measuredResultList;
     private List<MeasuredResult> measuredResultStringList;
+    private Date startMeasureDate;
+    private String startMeasureDateStr;
+    private CountDownTimer countTime;
+    private Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,14 +178,20 @@ public class NewMeasuringActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             String endDate = intent.getStringExtra("endDateTime");
-            String activityName = intent.getStringExtra("activityName");
+            activityName = intent.getStringExtra("activityName");
+
             TextView scheduleEndAt = findViewById(R.id.measureEndDate);
+
             if (activityName == null) {
                 setTitle("Quick Measurement");
-                scheduleEndAt.setText("N/A");
+                scheduleEndAt.setText("NA");
             } else if (activityName != null) {
                 setTitle("Measuring " + activityName);
                 scheduleEndAt.setText(intent.getStringExtra("endDateTime"));
+                activityName = intent.getStringExtra("activityName");
+                Log.d("handleIntent", "handleIntent: activityName="+activityName);
+                category = intent.getStringExtra("category");
+                activityID = intent.getStringExtra("activityId");
             }
         }
     }
@@ -245,8 +257,9 @@ public class NewMeasuringActivity extends AppCompatActivity {
             jsonRequestBody.put("deviceID", mobileID);
             jsonRequestBody.put("sensorID", DEVICE_ID);
             jsonRequestBody.put("activityID", "60599a397194bc0568afdeca");
-            jsonRequestBody.put("activityName", "Sleep");
-            jsonRequestBody.put("category", "Rest");
+            Log.d("initMeasureRecord", "initMeasureRecord: activityName="+activityName);
+            jsonRequestBody.put("activityName", activityName);
+            jsonRequestBody.put("category", category);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -319,7 +332,18 @@ public class NewMeasuringActivity extends AppCompatActivity {
                         initThreadState();
                         loadingDialog.dismissDialog();
                         //ppgLineChart.chart.clear();
-                        hrLineChart.chart.clear();
+                        countTime.cancel();
+                        timer.cancel();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(NewMeasuringActivity.this);
+                        builder.setMessage("Stopped Measurement")
+                                .setCancelable(false)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        //do things
+                                    }
+                                });
+                        AlertDialog alert = builder.create();
+                        alert.show();
                     } catch (PolarInvalidArgument polarInvalidArgument) {
                         loadingDialog.dismissDialog();
                         polarInvalidArgument.printStackTrace();
@@ -539,15 +563,12 @@ public class NewMeasuringActivity extends AppCompatActivity {
                 NewMeasuringActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        CountDownTimer countTime =new CountDownTimer(60000, 1000) {
+                        countTime =new CountDownTimer(60000, 1000) {
 
                             public void onTick(long millisUntilFinished) {
                                 float second = millisUntilFinished / 1000 ;
                                 timeCountDown = 60 - second;
                                 float percentage = timeCountDown / 60 * 100;
-//                        Log.d("timer", "onTick: second"+second);
-//                        Log.d("timer", "onTick: "+timeCountDown);
-//                        Log.d("timer", "onTick: "+percentage);
                                 progressBar.setProgress((int)percentage);
                                 progress_tv.setText(String.valueOf((int)percentage)+"%");
                             }
@@ -555,6 +576,7 @@ public class NewMeasuringActivity extends AppCompatActivity {
                             public void onFinish() {
                                 measuredSample++;
                                 measuredSampleNo.setText(String.valueOf(measuredSample));
+                                progress_tv.setText("0%");
                             }
 
                         };
@@ -589,10 +611,15 @@ public class NewMeasuringActivity extends AppCompatActivity {
         Thread getPPGData_OnUIThread;
 
         // And From your main() method or any other method
-        Timer timer = new Timer();
+        timer = new Timer();
         simpleInOneMinutes = new PPG_Model_Sample();
         timer.schedule(new InsertPPGSignalToWebSocket(), 0, 60000);
         //timer.schedule(new InsertPPGSignalToWebSocket(), 5000, 5000);
+        final Calendar startCalendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Hong_Kong"), Locale.US);
+        SimpleDateFormat startDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        startDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+08:00"));
+        Log.d("initPPGDataThread", "initPPGDataThread: "+startDateFormat.format(startCalendar.getTime()));
+        measureStartAt.setText(startDateFormat.format(startCalendar.getTime()));
         getPPGDataRunnable = (new Runnable() {
             @Override
             public void run() {
