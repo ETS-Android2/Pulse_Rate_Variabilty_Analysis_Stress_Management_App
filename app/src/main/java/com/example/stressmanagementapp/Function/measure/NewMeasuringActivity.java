@@ -2,8 +2,10 @@ package com.example.stressmanagementapp.Function.measure;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -129,8 +131,10 @@ public class NewMeasuringActivity extends AppCompatActivity {
 
 
         apiPath = getString(R.string.api_path);
-        mobileID = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key),Context.MODE_PRIVATE);
+        this.userId = sharedPref.getString("user_id",null);
+        this.mobileID = sharedPref.getString("mobile_id",null);
+        Log.d("onCreate", String.format("onCreate: userId=%s, mobileID=%s",userId,mobileID));
         handleIntent();
         setupSensorApi();
         initThreadState();
@@ -271,7 +275,7 @@ public class NewMeasuringActivity extends AppCompatActivity {
         tempPPGSignal = new JSONArray();
         lock = new ReentrantLock();
 
-        this.userId = "6058ba30ba59f62decefbe3d";
+
         this.measureId = String.format("%s_%s", userId, DateUtil.getDateStringInMeasuredRecord());
         if (isMeasureRestingData == false) {
 
