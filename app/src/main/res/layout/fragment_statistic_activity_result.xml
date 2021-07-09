@@ -15,7 +15,7 @@
             android:id="@+id/BPMStatistic"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintBottom_toTopOf="@id/pieChartConatiner"
+            app:layout_constraintBottom_toTopOf="@id/restingAvgHR_PPILineChart"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -63,6 +63,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:text="Overall BPM Statistic"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -141,7 +142,7 @@
             app:layout_constraintBottom_toTopOf="@+id/mostNegativeActivityContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pieChartConatiner">
+            app:layout_constraintTop_toBottomOf="@id/restingAvgHR_PPILineChart">
 
             <TextView
                 android:id="@+id/mostPositiveLabel"
@@ -149,7 +150,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Most Positive Activity For You"
+                android:text="Lowest Stress Level Top 3"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -267,11 +269,11 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@id/pieChartConatiner"
+            app:layout_constraintBottom_toTopOf="@id/restingAvgHR_PPILineChart"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sortActiivtyResultContainer">
+            app:layout_constraintTop_toBottomOf="@+id/categoryStatLayout">
 
             <TextView
                 android:id="@+id/mostNegativeLabel"
@@ -279,7 +281,8 @@
                 android:layout_height="19dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Most Negative Activity For You"
+                android:text="Highest Stress Level Top 3"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -392,9 +395,9 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/pieChartConatiner"
+            android:id="@+id/restingAvgHR_PPILineChart"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@id/mostPositiveActivityContainer"
             app:layout_constraintEnd_toEndOf="parent"
@@ -402,58 +405,58 @@
             app:layout_constraintTop_toBottomOf="@id/BPMStatistic">
 
             <TextView
-                android:id="@+id/textView16"
+                android:id="@+id/restingHRLineChartLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Overall Stress Level"
+                android:text="History Avg Resting HR"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.github.mikephil.charting.charts.PieChart
-                android:id="@+id/chart1"
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/restingAvgHRLineChart"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="200dp"
+                app:layout_constraintTop_toBottomOf="@+id/restingHRLineChartLabel"
+                tools:layout_editor_absoluteX="0dp" />
+
+            <TextView
+                android:id="@+id/restingPPILineChartLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="History Avg Resting PPI"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/restingHRLineChartLabel"
+                app:layout_constraintTop_toBottomOf="@+id/restingAvgHRLineChart" />
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/restingAvgPPIILineChart"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                app:layout_constraintTop_toBottomOf="@+id/restingPPILineChartLabel"
+                tools:layout_editor_absoluteX="0dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/sortActiivtyResultContainer"
+            android:id="@+id/categoryStatLayout"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mostNegativeActivityContainer">
 
-            <TextView
-                android:id="@+id/allRecordLabel"
+            <Button
+                android:id="@+id/button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="All Records"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Spinner
-                android:id="@+id/scheduleFilterSpinner"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ListView
-                android:id="@+id/measuredList"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:text="View All Record"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/scheduleFilterSpinner" />
-
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

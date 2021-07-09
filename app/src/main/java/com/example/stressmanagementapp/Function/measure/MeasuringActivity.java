@@ -7,9 +7,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,16 +17,11 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.stressmanagementapp.Chart.HRLineChart.HRLineChart;
 import com.example.stressmanagementapp.Dialog.LoadingDialog;
 import com.example.stressmanagementapp.Chart.AbstractCustomLineChart;
-import com.example.stressmanagementapp.Chart.PPGLineChart.PPGLineChart;
-import com.example.stressmanagementapp.Function.schedule.ScheduleActivity;
 import com.example.stressmanagementapp.Model.PPG_Model;
 import com.example.stressmanagementapp.Model.PPG_Model_Sample;
 import com.example.stressmanagementapp.R;
@@ -36,7 +29,6 @@ import com.example.stressmanagementapp.Util.CustomThread;
 import com.example.stressmanagementapp.Util.DateUtil;
 import com.github.mikephil.charting.charts.LineChart;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -238,7 +230,7 @@ public class MeasuringActivity extends AppCompatActivity {
 
     private void setupLineChart() {
         chart = findViewById(R.id.realTimeLineChart);
-       // ppgLineChart  = new PPGLineChart(chart);
+       // ppgLineChart  = new PPILineChart(chart);
         hrLineChart = new HRLineChart(chart);
     }
 

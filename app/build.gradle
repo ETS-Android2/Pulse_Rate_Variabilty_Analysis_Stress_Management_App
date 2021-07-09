@@ -54,7 +54,7 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.0'
     implementation files('libs/polar-ble-sdk.aar')
     implementation files('libs/polar-protobuf-release.aar')
     implementation group: 'commons-io', name: 'commons-io', version: '2.4'

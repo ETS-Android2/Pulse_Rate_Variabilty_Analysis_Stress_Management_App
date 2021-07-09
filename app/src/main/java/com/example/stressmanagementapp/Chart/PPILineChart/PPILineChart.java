@@ -1,10 +1,11 @@
-package com.example.stressmanagementapp.Chart.HRLineChart;
+package com.example.stressmanagementapp.Chart.PPILineChart;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.util.Log;
 
 import com.example.stressmanagementapp.Chart.AbstractCustomLineChart;
+import com.example.stressmanagementapp.Chart.MyMarkerView;
+import com.example.stressmanagementapp.R;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -20,16 +21,17 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 
-public class HRLineChart extends AbstractCustomLineChart {
+public class PPILineChart extends AbstractCustomLineChart {
     public LineChart chart;
     protected Typeface tfRegular;
     protected Typeface tfLight;
 
-    public HRLineChart(LineChart chart) {
+    public PPILineChart(LineChart chart){
         super(chart);
-        this.chart = chart;
+        this.chart=chart;
         // enable description text
         chart.getDescription().setEnabled(false);
 
@@ -68,16 +70,18 @@ public class HRLineChart extends AbstractCustomLineChart {
         xl.setDrawGridLines(false);
         xl.setAvoidFirstLastClipping(true);
         xl.setEnabled(true);
-
+        xl.setPosition(XAxis.XAxisPosition.BOTTOM);
         YAxis leftAxis = chart.getAxisLeft();
         leftAxis.setTypeface(tfLight);
-
         leftAxis.setTextColor(Color.WHITE);
         leftAxis.setDrawGridLines(false);
 
         YAxis rightAxis = chart.getAxisRight();
         rightAxis.setEnabled(false);
+
+
     }
+
 
     @Override
     public void addEntry(Object inputData) {
@@ -86,10 +90,11 @@ public class HRLineChart extends AbstractCustomLineChart {
         try {
             DateFormat simpleDateFormat=new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
             timestamp = simpleDateFormat.parse( ((JSONObject) inputData).getString("timestamp"));
-            avgRestingAvgHR = (float) ((JSONObject) inputData).getDouble("avgRestingAvgHR");
+            avgRestingAvgHR = (float) ((JSONObject) inputData).getDouble("avgRestingAvgPPI");
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         LineData data = chart.getData();
 
         if (data == null) {
@@ -109,6 +114,9 @@ public class HRLineChart extends AbstractCustomLineChart {
         entry.setY(avgRestingAvgHR);
         entry.setData(timestamp);
         data.addEntry(entry, 0);
+
+        data.notifyDataChanged();
+
         // let the chart know it's data has changed
         chart.notifyDataSetChanged();
 
@@ -118,10 +126,9 @@ public class HRLineChart extends AbstractCustomLineChart {
 //            // this automatically refreshes the chart (calls invalidate())
         chart.moveViewTo(data.getEntryCount() - 7, 50f, YAxis.AxisDependency.LEFT);
     }
-
     @Override
     public LineDataSet createSet() {
-        LineDataSet set = new LineDataSet(null, "Resting Avg HR");
+        LineDataSet set = new LineDataSet(null, "Resting Avg PPI");
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
         set.setColor(ColorTemplate.getHoloBlue());
         set.setCircleColor(Color.WHITE);
@@ -136,4 +143,3 @@ public class HRLineChart extends AbstractCustomLineChart {
         return set;
     }
 }
-

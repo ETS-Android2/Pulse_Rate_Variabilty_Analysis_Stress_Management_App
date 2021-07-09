@@ -94,37 +94,15 @@ public abstract class AbstractCustomLineChart {
 //            // AxisDependency.LEFT);
 //        }
 
-    protected void updateMaxMinYAxisRealTime(LineChart chart, Model model) {
+    protected void updateMaxMinYAxisRealTime(LineChart chart) {
         YAxis leftAxis = chart.getAxisLeft();
         float realTimeMaxY=0;
         float realTimeMinY=0;
-        if(model.getClass().isInstance(PPG_Model.class)) {
-            PPG_Model ppg_model = (PPG_Model) model;
-            float max0 = Math.max(ppg_model .getPpg0(), ppg_model.getPpg1());
-            float max1 = Math.max(max0, ppg_model.getPpg2());
 
-            float min0 = Math.min(ppg_model.getPpg0(), ppg_model.getPpg1());
-            float min1 = Math.min(min0, ppg_model.getPpg2());
-        }
 //         leftAxis.setAxisMaximum(realTimeMaxY +10000);
 //        if(realTimeMinY -10000 >=0)
 //            leftAxis.setAxisMinimum(realTimeMinY -10000);
     }
+    public abstract LineDataSet createSet();
 
-    public LineDataSet createSet() {
-
-        LineDataSet set = new LineDataSet(null, "PPG Signal Data");
-        set.setAxisDependency(YAxis.AxisDependency.LEFT);
-        set.setColor(ColorTemplate.getHoloBlue());
-        set.setCircleColor(Color.WHITE);
-        set.setLineWidth(2f);
-        set.setCircleRadius(4f);
-        set.setFillAlpha(65);
-        set.setFillColor(ColorTemplate.getHoloBlue());
-        set.setHighLightColor(Color.rgb(244, 117, 117));
-        set.setValueTextColor(Color.WHITE);
-        set.setValueTextSize(9f);
-        set.setDrawValues(false);
-        return set;
-    }
 }
