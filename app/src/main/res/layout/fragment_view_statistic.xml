@@ -16,19 +16,19 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/noRecordMessage"
+            android:id="@+id/noScheduleMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
             android:layout_marginEnd="8dp"
-            android:text="No Record"
+            android:text="No Schedule"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/recordFilterSpinner" />
+            app:layout_constraintTop_toBottomOf="@id/scheduleFilterSpinner" />
 
         <Spinner
-            android:id="@+id/recordFilterSpinner"
+            android:id="@+id/scheduleFilterSpinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -37,14 +37,14 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ListView
-            android:id="@+id/recordList"
+            android:id="@+id/scheduleList"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recordFilterSpinner" />
+            app:layout_constraintTop_toBottomOf="@+id/scheduleFilterSpinner" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

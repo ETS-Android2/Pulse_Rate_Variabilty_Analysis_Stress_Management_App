@@ -13,14 +13,14 @@ public class MeasuredResult {
     private double avg_overall_ppi,min_ppi,max_ppi;
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date timestamp;
-    private int stressValue;
+    private String stressValue;
     private String stressLabel;
 
 
     public MeasuredResult() {
     }
 
-    public MeasuredResult(String measureID, int avg_bpm1, int avg_bpm2, int avg_bpm3, double avg_ppi_1, double avg_ppi_2, double avg_ppi_3, double avg_overall_bpm, double avg_overall_ppi, double min_ppi, double max_ppi, Date timestamp, int stressValue, String stressLabel) {
+    public MeasuredResult(String measureID, int avg_bpm1, int avg_bpm2, int avg_bpm3, double avg_ppi_1, double avg_ppi_2, double avg_ppi_3, double avg_overall_bpm, double avg_overall_ppi, double min_ppi, double max_ppi, Date timestamp, String stressValue, String stressLabel) {
         this.measureID = measureID;
         this.avg_bpm1 = avg_bpm1;
         this.avg_bpm2 = avg_bpm2;
@@ -133,11 +133,11 @@ public class MeasuredResult {
         this.timestamp = timestamp;
     }
 
-    public int getStressValue() {
+    public String getStressValue() {
         return this.stressValue;
     }
 
-    public void setStressValue(int stressValue) {
+    public void setStressValue(String stressValue) {
         this.stressValue = stressValue;
     }
 
@@ -209,7 +209,7 @@ public class MeasuredResult {
         return this;
     }
 
-    public MeasuredResult stressValue(int stressValue) {
+    public MeasuredResult stressValue(String stressValue) {
         setStressValue(stressValue);
         return this;
     }

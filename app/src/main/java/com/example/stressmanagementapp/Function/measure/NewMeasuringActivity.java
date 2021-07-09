@@ -2,8 +2,10 @@ package com.example.stressmanagementapp.Function.measure;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -48,6 +50,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
+import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -105,12 +108,12 @@ public class NewMeasuringActivity extends AppCompatActivity {
     private Socket mSocket;
     private static JSONArray tempPPGSignal;
     private static PPG_Model_Sample simpleInOneMinutes;
-    private static ReentrantLock lock;
+    private static ReentrantLock lock,webSocketAndAPILock;
     private String apiPath;
     private String mobileID, category, activityName, activityID;
     private double remainingTimeInPercentageOfMinute;
     private float timeCountDown = 60;
-    private TextView progress_tv, measuredSampleNo, lastHRValue, lastAvgPPI, lastMaxPPI, lastMinPPI, lastSampleTime, measureStartAt, measureEndDate, stressLevelValue2, stressLevelLabel2;
+    private TextView progress_tv, measuredSampleNo, lastHRValue, lastAvgPPI, lastMaxPPI, lastMinPPI, lastSampleTime, measureStartAt, measureEndDate, avgStressLevelValue, stressLevelLabel2,lastMaxHRValue,lastMinHRValue,maxStressLevelValue,minStressLevelValue,minStressLevelLabel,maxStressLevelLabel;
     ;
     private int measuredSample = 0;
     private ListView measuredResultList;
@@ -120,7 +123,7 @@ public class NewMeasuringActivity extends AppCompatActivity {
     private CountDownTimer countTime;
     private Timer timer;
     private boolean isMeasureRestingData = false;
-
+    private Document latestMeasuredResult = new Document();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,8 +132,10 @@ public class NewMeasuringActivity extends AppCompatActivity {
 
 
         apiPath = getString(R.string.api_path);
-        mobileID = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        this.userId = sharedPref.getString("user_id", null);
+        this.mobileID = sharedPref.getString("mobile_id", null);
+        Log.d("onCreate", String.format("onCreate: userId=%s, mobileID=%s", userId, mobileID));
         handleIntent();
         setupSensorApi();
         initThreadState();
@@ -144,15 +149,28 @@ public class NewMeasuringActivity extends AppCompatActivity {
 //            startMeasureBtn.setVisibility(View.INVISIBLE);
 //            stopMeasureBtn.setVisibility(View.INVISIBLE);
             stressLevelLabel2 = findViewById(R.id.stressLevelLabel2);
+            maxStressLevelLabel=findViewById(R.id.maxStressLevelLabel);
+            minStressLevelLabel=findViewById(R.id.minStressLevelLabel);
+
+            maxStressLevelLabel.setVisibility(View.INVISIBLE);
             stressLevelLabel2.setVisibility(View.INVISIBLE);
-            stressLevelValue2 = findViewById(R.id.stressLevelValue2);
-            stressLevelValue2.setVisibility(View.INVISIBLE);
+
+
+
+            avgStressLevelValue.setVisibility(View.INVISIBLE);
+            maxStressLevelValue.setVisibility(View.INVISIBLE);
+            minStressLevelValue.setVisibility(View.INVISIBLE);
         }
 
 
     }
 
     private void initMeasureResult() {
+        lastMaxHRValue=findViewById(R.id.lastMaxHRValue);
+        lastMinHRValue=findViewById(R.id.lastMinHRValue);
+        avgStressLevelValue = findViewById(R.id.avgStressLevelValue);
+        maxStressLevelValue=findViewById(R.id.maxStressLevelValue);
+        minStressLevelValue = findViewById(R.id.minStressLevelValue);
         measuredSampleNo = findViewById(R.id.measuredSampleNo);
         lastHRValue = findViewById(R.id.lastHRValue);
         lastAvgPPI = findViewById(R.id.lastAvgPPI);
@@ -210,6 +228,108 @@ public class NewMeasuringActivity extends AppCompatActivity {
         }
     }
 
+    public void getLatestMeasuredRecord(MeasuredResult result) {
+        JSONObject requestBody = new JSONObject();
+        try {
+            requestBody.put("measureID", measureId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String endpoint = "getOverallResultForTheRecord";
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = apiPath + "/" + endpoint;
+        Log.d("getLatestMeasuredRecord", "Connecting url = " + url);
+        // Request a string response from the provided URL.
+
+
+        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.POST, url, requestBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            latestMeasuredResult = Document.parse(response.getString("result"));
+                            Document doc = latestMeasuredResult;
+                            Log.d("getOverallResultForTheRecord", "run: "+response.toString());
+
+                            Double avg_BPM_Value=doc.getDouble("avg_BPM_Value");
+                            Double highest_BPM_Value=doc.getDouble("highest_BPM_Value");
+                            Double lowest_BPM_Value=doc.getDouble("lowest_BPM_Value");
+
+                            Double avg_PPI_Value=doc.getDouble("avg_PPI_Value");
+                            Double highest_PPI_Value=doc.getDouble("highest_PPI_Value");
+                            Double lowest_PPI_Value=doc.getDouble("lowest_PPI_Value");
+
+                            double avg_StressLevel_Value=doc.getDouble("avg_StressLevel_Value");
+                            double highest_StressLevel_Value=doc.getDouble("highest_StressLevel_Value");
+                            double lowest_StressLevel_Value=doc.getDouble("lowest_StressLevel_Value");
+
+                            Integer avg_bpm = avg_BPM_Value.intValue();
+                            Integer max_bpm = highest_BPM_Value.intValue();
+                            Integer min_bpm= lowest_BPM_Value.intValue();
+
+                            Integer avg_ppi = avg_PPI_Value.intValue();
+                            Integer max_ppi= highest_PPI_Value.intValue();
+                            Integer min_ppi= lowest_PPI_Value.intValue();
+
+                            double avgStress = avg_StressLevel_Value;
+                            double maxStress = highest_StressLevel_Value;
+                            double minStress = lowest_StressLevel_Value;
+
+                            lastHRValue.setText(String.valueOf(avg_bpm));
+                            lastMaxHRValue.setText(String.valueOf(max_bpm));
+                            lastMinHRValue.setText(String.valueOf(min_bpm));
+
+                            lastAvgPPI.setText(String.valueOf(avg_ppi));
+                            lastMaxPPI.setText(String.valueOf(max_ppi));
+                            lastMinPPI.setText(String.valueOf(min_ppi));
+                            avgStressLevelValue.setText(String.format("%.2f",avgStress)+"%");
+                            maxStressLevelValue.setText(String.format("%.2f",maxStress)+"%");
+                            minStressLevelValue.setText(String.format("%.2f",minStress)+"%");
+
+                            String stressValueInLastMinute = response.getString("lastRecordStressValue");
+                            Log.d(TAG, String.format("onResponse: avgStress=%s, maxStress=%s, minStress=%s,stressValueInLastMinute=%s",avgStress,maxStress,minStress,stressValueInLastMinute));
+
+                            result.setStressValue(stressValueInLastMinute);
+
+                            final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Hong_Kong"), Locale.US);
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+08:00"));
+                            lastSampleTime.setText(simpleDateFormat.format(calendar.getTime()));
+                            measuredResultStringList.add(result);
+                            MeasureResultListAdapter customCountryList = new MeasureResultListAdapter(NewMeasuringActivity.this, measuredResultStringList);
+                            measuredResultList.setAdapter(customCountryList);
+                            if (isMeasureRestingData == true) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(NewMeasuringActivity.this);
+                                builder.setMessage(String.format("Resting data:\nAVG HR = %s\n+AVG PPI = %s", (int) measuredResultStringList.get(0).getAvg_overall_bpm(), (int) measuredResultStringList.get(0).getAvg_overall_ppi()))
+                                        .setCancelable(false)
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                //do things
+                                                setResult(RESULT_OK, intent);
+                                                finish();
+                                            }
+                                        });
+                                AlertDialog alert = builder.create();
+                                alert.show();
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("createUserIfNotExist", "Response body = " + error.toString());
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+
+    }
+
     private Emitter.Listener onGetResult = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
@@ -229,33 +349,7 @@ public class NewMeasuringActivity extends AppCompatActivity {
                         if (isMeasureRestingData == true) {
                             pushNewRestingData_To_Profile(data);
                         } else {
-                            pushNewMeasuredResult(data);
-                        }
-
-                        lastHRValue.setText(String.valueOf((int) result.getAvg_overall_bpm()));
-                        lastAvgPPI.setText(String.valueOf((int) result.getAvg_overall_ppi()));
-                        lastMaxPPI.setText(String.valueOf((int) result.getMax_ppi()));
-                        lastMinPPI.setText(String.valueOf((int) result.getMin_ppi()));
-                        final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Hong_Kong"), Locale.US);
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+08:00"));
-                        lastSampleTime.setText(simpleDateFormat.format(calendar.getTime()));
-                        measuredResultStringList.add(result);
-                        MeasureResultListAdapter customCountryList = new MeasureResultListAdapter(NewMeasuringActivity.this, measuredResultStringList);
-                        measuredResultList.setAdapter(customCountryList);
-                        if (isMeasureRestingData == true) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(NewMeasuringActivity.this);
-                            builder.setMessage(String.format("Resting data:\nAVG HR = %s\n+AVG PPI = %s",(int)measuredResultStringList.get(0).getAvg_overall_bpm(),(int)measuredResultStringList.get(0).getAvg_overall_ppi()))
-                                    .setCancelable(false)
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            //do things
-                                            setResult(RESULT_OK, intent);
-                                            finish();
-                                        }
-                                    });
-                            AlertDialog alert = builder.create();
-                            alert.show();
+                            pushNewMeasuredResult(data,result);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -270,8 +364,8 @@ public class NewMeasuringActivity extends AppCompatActivity {
 
         tempPPGSignal = new JSONArray();
         lock = new ReentrantLock();
+        webSocketAndAPILock = new ReentrantLock();
 
-        this.userId = "6058ba30ba59f62decefbe3d";
         this.measureId = String.format("%s_%s", userId, DateUtil.getDateStringInMeasuredRecord());
         if (isMeasureRestingData == false) {
 
@@ -361,7 +455,7 @@ public class NewMeasuringActivity extends AppCompatActivity {
                 try {
                     countTime.cancel();
                     timer.cancel();
-                    if(isMeasureRestingData==false) {
+                    if (isMeasureRestingData == false) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(NewMeasuringActivity.this);
                         builder.setMessage("Stopped Measurement")
                                 .setCancelable(false)
@@ -521,7 +615,7 @@ public class NewMeasuringActivity extends AppCompatActivity {
 
     private PPG_Model ppgModel;
 
-    private void pushNewMeasuredResult(JSONObject jsonRequestBody) {
+    private void pushNewMeasuredResult(JSONObject jsonRequestBody,MeasuredResult result) {
         String endpoint = "pushNewMeasuredResult_To_MeasuredRecord";
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -537,6 +631,8 @@ public class NewMeasuringActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("pushNewPPGSignalRecordTo_MeasuredRecord", "onResponse: " + response.toString());
+                        getLatestMeasuredRecord(result);
+
                     }
 
 
@@ -617,7 +713,7 @@ public class NewMeasuringActivity extends AppCompatActivity {
                 //pushNewPPGRecordInMinute(jsonRequestBody);
                 try {
                     if (tempPPGSignal.length() > 5000) {
-                        Log.d("InsertPPGSignalToWebSocket", "Emit "+tempPPGSignal.length());
+                        Log.d("InsertPPGSignalToWebSocket", "Emit " + tempPPGSignal.length());
                         mSocket.emit("PPG_Signal", tempPPGSignal.toString());
                     }
 

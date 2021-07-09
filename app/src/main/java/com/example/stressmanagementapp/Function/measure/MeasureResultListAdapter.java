@@ -59,6 +59,7 @@ public class MeasureResultListAdapter extends ArrayAdapter {
             avgPPI.setText(String.valueOf((int)result.getAvg_overall_ppi())+" ms");
             minPPI.setText(String.valueOf((int)result.getMin_ppi())+" ms");
             maxPPI.setText(String.valueOf((int)result.getMax_ppi())+" ms");
+            stressLevelValue.setText(result.getStressValue()+"%");
             //stressLevelValue.setText());
         } catch (Exception e) {
             e.printStackTrace();

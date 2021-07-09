@@ -10,20 +10,20 @@
         android:id="@+id/stressLevelLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
         android:text="Stress Level"
-        app:layout_constraintEnd_toEndOf="@+id/stressLevelValue"
-        app:layout_constraintStart_toStartOf="@+id/stressLevelValue"
-        app:layout_constraintTop_toBottomOf="@+id/stressLevelValue" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/avgPPI" />
 
     <TextView
         android:id="@+id/stressLevelValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="28dp"
         android:text="3 (LOW)"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/avgPPI" />
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/stressLevelLabel"
+        app:layout_constraintStart_toStartOf="@+id/stressLevelLabel"
+        app:layout_constraintTop_toBottomOf="@+id/stressLevelLabel" />
 
     <TextView
         android:id="@+id/lastRecordTimeLabel"
