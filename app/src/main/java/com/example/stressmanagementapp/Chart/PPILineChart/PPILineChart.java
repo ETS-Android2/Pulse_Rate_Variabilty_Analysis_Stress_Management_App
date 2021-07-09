@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 
@@ -88,7 +89,7 @@ public class PPILineChart extends AbstractCustomLineChart {
         float avgRestingAvgHR=0;
         Date timestamp=null;
         try {
-            DateFormat simpleDateFormat=new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+            DateFormat simpleDateFormat=new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
             timestamp = simpleDateFormat.parse( ((JSONObject) inputData).getString("timestamp"));
             avgRestingAvgHR = (float) ((JSONObject) inputData).getDouble("avgRestingAvgPPI");
         } catch (Exception e) {

@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 
 public class HRLineChart extends AbstractCustomLineChart {
@@ -84,7 +85,7 @@ public class HRLineChart extends AbstractCustomLineChart {
         float avgRestingAvgHR=0;
         Date timestamp=null;
         try {
-            DateFormat simpleDateFormat=new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+            DateFormat simpleDateFormat=new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
             timestamp = simpleDateFormat.parse( ((JSONObject) inputData).getString("timestamp"));
             avgRestingAvgHR = (float) ((JSONObject) inputData).getDouble("avgRestingAvgHR");
         } catch (Exception e) {

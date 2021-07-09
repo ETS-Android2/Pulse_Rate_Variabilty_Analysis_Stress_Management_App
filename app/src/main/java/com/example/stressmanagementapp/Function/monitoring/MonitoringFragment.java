@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -33,6 +34,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import static io.realm.Realm.getApplicationContext;
 
@@ -42,6 +44,7 @@ public class MonitoringFragment extends Fragment {
     private EditText monitoringCode;
     private String apiPath;
     private String userId,mobileID;
+    private TextView generatedCode;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_monitoring_record, container, false);
@@ -57,7 +60,7 @@ public class MonitoringFragment extends Fragment {
         monitoringCode = root.findViewById(R.id.monitoringCode);
         monitorNowBtn = root.findViewById(R.id.monitorNowBtn);
         resetBtn = root.findViewById(R.id.resetBtn);
-
+        generatedCode = root.findViewById(R.id.generatedCode);
         monitorNowBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,12 +72,18 @@ public class MonitoringFragment extends Fragment {
         resetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                byte[] array = new byte[4]; // length is bounded by 4
-                new Random().nextBytes(array);
-                String generatedString = new String(array, Charset.forName("UTF-8"));
-                initMonitoringRelationship(generatedString);
+
             }
         });
+        char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+        StringBuilder sb = new StringBuilder(20);
+        Random random = new Random();
+        for (int i = 0; i < 4; i++) {
+            char c = chars[random.nextInt(chars.length)];
+            sb.append(c);
+        }
+        String uuid = sb.toString();
+        initMonitoringRelationship(uuid);
     }
 
     private void verifyCode() {
@@ -91,6 +100,7 @@ public class MonitoringFragment extends Fragment {
 
         try {
             jsonRequestBody.put("pairCode", code);
+            jsonRequestBody.put("monitorID", userId);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -115,6 +125,7 @@ public class MonitoringFragment extends Fragment {
                             } else {
                                 Intent intent = new Intent(getContext(), MonitoringActivity.class);
                                 intent.putExtra("targetID", response.getString("targetID"));
+                                intent.putExtra("pairCode", code);
                                 startActivity(intent);
                             }
                         }catch (Exception e){
@@ -129,6 +140,7 @@ public class MonitoringFragment extends Fragment {
                 Log.e("initMonitoringRelationship", "Response body = " + error.toString());
             }
         });
+        queue.add(jsonRequest);
     }
 
     private void initMonitoringRelationship(String code) {
@@ -139,18 +151,20 @@ public class MonitoringFragment extends Fragment {
         List<String> list = new ArrayList<String>();
         // Request a string response from the provided URL.
         JSONObject jsonRequestBody = new JSONObject();
+        generatedCode.setText(code);
         try {
             jsonRequestBody.put("targetID", userId);
             jsonRequestBody.put("pairCode", code);
         }catch (Exception e){
             e.printStackTrace();
         }
+        Log.d("initMonitoringRelationship", "jsonRequestBody = " + jsonRequestBody.toString());
         JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url, jsonRequestBody,
                 new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.e("initMonitoringRelationship", "Response body = " + response.toString());
+                        Log.d("initMonitoringRelationship", "Response body = " + response.toString());
 //                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 //                        builder.setMessage("Regenerated code")
 //                                .setCancelable(false)
@@ -170,6 +184,7 @@ public class MonitoringFragment extends Fragment {
                 Log.e("initMonitoringRelationship", "Response body = " + error.toString());
             }
         });
+        queue.add(jsonRequest);
     }
 
 }
