@@ -15,7 +15,7 @@
         android:id="@+id/navigation_monitoring"
         android:name="com.example.stressmanagementapp.Function.monitoring.MonitoringFragment"
         android:label="@string/title_monitoring"
-        tools:layout="@layout/fragment_monitoring_norecord" />
+        tools:layout="@layout/fragment_monitoring_record" />
 
     <fragment
         android:id="@+id/navigation_statistic"

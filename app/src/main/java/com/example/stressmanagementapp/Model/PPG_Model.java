@@ -1,19 +1,15 @@
 package com.example.stressmanagementapp.Model;
 
-import android.util.Log;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
 
 import polar.com.sdk.api.model.PolarOhrPPGData;
 
-public class PPG_Model implements Model {
+public class PPG_Model {
     private float ppg0, ppg1, ppg2;
     private float ambient,ambient2;
     private long status;

@@ -11,6 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.StressManagementApp">
+        <activity android:name=".Function.monitoring.MonitoringActivity"></activity>
+        <activity android:name=".Function.statistic.read_all_measured_record_by_filter_activity" />
         <activity
             android:name=".Function.MainActivity"
             android:label="@string/app_name">
@@ -31,6 +33,9 @@
             android:parentActivityName=".Function.MainActivity" />
         <activity
             android:name=".Function.schedule.ViewScheduledMeasureActivity"
+            android:parentActivityName=".Function.MainActivity" />
+        <activity
+            android:name=".Function.statistic.ReadAll_MeasuredRecord_By_filter"
             android:parentActivityName=".Function.MainActivity" />
     </application>
 

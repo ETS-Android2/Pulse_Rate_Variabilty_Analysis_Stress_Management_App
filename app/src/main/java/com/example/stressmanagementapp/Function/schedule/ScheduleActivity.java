@@ -155,13 +155,6 @@ public class ScheduleActivity extends AppCompatActivity {
 
 
         }
-//        Intent editSchedule = new Intent(ViewScheduledMeasureActivity.this, ScheduleActivity.class);
-//        editSchedule.putExtra("action", "edit");
-//        editSchedule.putExtra("activityName", activityName);
-//        editSchedule.putExtra("category", category);
-//        editSchedule.putExtra("startDateStr", startDateStr);
-//        editSchedule.putExtra("endDateStr", endDateStr);
-//        editSchedule.putExtra("status", status);
     }
 
     private void initEventNameEditText() {

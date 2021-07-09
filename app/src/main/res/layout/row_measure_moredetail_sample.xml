@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/stressLevelLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Avg. Stress"
+        app:layout_constraintStart_toEndOf="@+id/avgPPI"
+        app:layout_constraintTop_toTopOf="@+id/avgPPILabel" />
+
+    <TextView
+        android:id="@+id/avgStressLevelValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="5.66%"
+        app:layout_constraintStart_toEndOf="@+id/stressLevelLabel"
+        app:layout_constraintTop_toTopOf="@+id/stressLevelLabel" />
+
+    <TextView
+        android:id="@+id/lastRecordTimeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Last Measure Time"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/categoryName" />
+
+    <TextView
+        android:id="@+id/lastRecordTime2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="2021-06-28 07:01"
+        app:layout_constraintStart_toEndOf="@+id/lastRecordTimeLabel"
+        app:layout_constraintTop_toTopOf="@+id/lastRecordTimeLabel" />
+
+    <TextView
+        android:id="@+id/avgHRLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Avg. HR"
+        app:layout_constraintStart_toStartOf="@+id/lastRecordTimeLabel"
+        app:layout_constraintTop_toBottomOf="@+id/lastRecordTimeLabel" />
+
+    <TextView
+        android:id="@+id/avgHR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="75"
+        app:layout_constraintStart_toEndOf="@+id/avgHRLabel"
+        app:layout_constraintTop_toTopOf="@+id/avgHRLabel" />
+
+    <TextView
+        android:id="@+id/avgPPILabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="8dp"
+        android:text="Avg. PPI"
+        app:layout_constraintStart_toEndOf="@+id/avgHRLabel"
+        app:layout_constraintTop_toBottomOf="@+id/lastRecordTime2" />
+
+    <TextView
+        android:id="@+id/avgPPI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="725 ms"
+        app:layout_constraintStart_toEndOf="@+id/avgPPILabel"
+        app:layout_constraintTop_toTopOf="@+id/avgPPILabel" />
+
+    <TextView
+        android:id="@+id/minPPILabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Min. PPI"
+        app:layout_constraintStart_toStartOf="@+id/avgPPILabel"
+        app:layout_constraintTop_toBottomOf="@+id/avgPPILabel" />
+
+    <TextView
+        android:id="@+id/minPPI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="680 ms"
+        app:layout_constraintStart_toEndOf="@+id/minPPILabel"
+        app:layout_constraintTop_toTopOf="@+id/minPPILabel" />
+
+    <TextView
+        android:id="@+id/maxPPILabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Max. PPI"
+        app:layout_constraintStart_toStartOf="@+id/minPPILabel"
+        app:layout_constraintTop_toBottomOf="@+id/minPPILabel" />
+
+    <TextView
+        android:id="@+id/maxPPI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="780 ms"
+        app:layout_constraintStart_toEndOf="@+id/maxPPILabel"
+        app:layout_constraintTop_toTopOf="@+id/maxPPILabel" />
+
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Min. HR"
+        app:layout_constraintStart_toStartOf="@+id/avgHRLabel"
+        app:layout_constraintTop_toBottomOf="@+id/avgHRLabel" />
+
+    <TextView
+        android:id="@+id/textView18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Max. HR"
+        app:layout_constraintStart_toStartOf="@+id/textView16"
+        app:layout_constraintTop_toBottomOf="@+id/textView16" />
+
+    <TextView
+        android:id="@+id/minHR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="68"
+        app:layout_constraintStart_toStartOf="@+id/avgHR"
+        app:layout_constraintTop_toTopOf="@+id/textView16" />
+
+    <TextView
+        android:id="@+id/maxHR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="110"
+        app:layout_constraintStart_toStartOf="@+id/minHR"
+        app:layout_constraintTop_toTopOf="@+id/textView18" />
+
+    <TextView
+        android:id="@+id/textView22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Min. Stress"
+        app:layout_constraintStart_toStartOf="@+id/stressLevelLabel"
+        app:layout_constraintTop_toBottomOf="@+id/stressLevelLabel" />
+
+    <TextView
+        android:id="@+id/minStressLevelValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-0.33%"
+        app:layout_constraintStart_toStartOf="@+id/avgStressLevelValue"
+        app:layout_constraintTop_toTopOf="@+id/textView22" />
+
+    <TextView
+        android:id="@+id/textView24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Max. Stress"
+        app:layout_constraintStart_toStartOf="@+id/textView22"
+        app:layout_constraintTop_toBottomOf="@+id/textView22" />
+
+    <TextView
+        android:id="@+id/maxStressLevelValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="26.33%"
+        app:layout_constraintStart_toStartOf="@+id/minStressLevelValue"
+        app:layout_constraintTop_toTopOf="@+id/textView24" />
+
+    <TextView
+        android:id="@+id/activityName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="11dp"
+        android:text="Activity Name"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/ActivityLabel"
+        app:layout_constraintTop_toTopOf="@+id/ActivityLabel" />
+
+    <TextView
+        android:id="@+id/categoryName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Category"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/activityName"
+        app:layout_constraintTop_toTopOf="@+id/textView29" />
+
+    <TextView
+        android:id="@+id/ActivityLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="Activity:"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView29"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Category:"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/ActivityLabel"
+        app:layout_constraintTop_toBottomOf="@+id/ActivityLabel" />
+</androidx.constraintlayout.widget.ConstraintLayout>

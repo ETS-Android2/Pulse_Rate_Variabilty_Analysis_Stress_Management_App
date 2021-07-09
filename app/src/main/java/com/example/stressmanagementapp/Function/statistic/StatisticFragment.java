@@ -1,12 +1,14 @@
 package com.example.stressmanagementapp.Function.statistic;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -37,7 +39,6 @@ import org.json.JSONObject;
 
 public class StatisticFragment extends Fragment {
 
-    private StatisticViewModel statisticViewModel;
     private ListView activityListView;
     private String api;
     private View root;
@@ -47,10 +48,9 @@ public class StatisticFragment extends Fragment {
     private TextView top1NegActivity,top2NegActivity,top3NegActivity;
     private LineChart avgHR_LineChart,avgPPI_LineChart;
     private AbstractCustomLineChart custom_avgHR_LineChart,custom_avgPPILineChart;
+    private Button viewAllMeasuredRecordButton;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        statisticViewModel =
-                new ViewModelProvider(this).get(StatisticViewModel.class);
         root = inflater.inflate(R.layout.fragment_statistic_activity_result, container, false);
         SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         //this.userId = sharedPref.getString("user_id", null);
@@ -58,7 +58,6 @@ public class StatisticFragment extends Fragment {
         api = getString(R.string.api_path);
         initUI();
         getAllStatisticData();
-        inuitMeasuredListView();
         return root;
     }
 
@@ -80,6 +79,16 @@ public class StatisticFragment extends Fragment {
 
         avgPPI_LineChart = root.findViewById(R.id.restingAvgPPIILineChart);
         custom_avgPPILineChart = new PPILineChart(avgPPI_LineChart);
+
+        viewAllMeasuredRecordButton = root.findViewById(R.id.viewAllMeasuredRecordButton);
+        viewAllMeasuredRecordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(),ReadAll_MeasuredRecord_By_filter.class);
+                intent.putExtra("userId",userId);
+                startActivity(intent);
+            }
+        });
     }
 
     private void getAllStatisticData(){
@@ -98,22 +107,7 @@ public class StatisticFragment extends Fragment {
         JSONObject requestBody = new JSONObject();
 
         try {
-//            SimpleDateFormat fromDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//            fromDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+8"));
-//            Date oldFromDate = fromDateFormat.parse(startDateStr);
-//            Date oldToDate = fromDateFormat.parse(endDateStr);
-//
-//
-//            SimpleDateFormat toDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-//            toDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-//            String newFromDate = toDateFormat.format(oldFromDate);
-//            String newToDate = toDateFormat.format(oldToDate);
-
             requestBody.put("userID", userId);
-
-
-
-            requestBody.put("status", "Scheduled");
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -284,79 +278,4 @@ public class StatisticFragment extends Fragment {
         // Add the request to the RequestQueue.
         queue.add(jsonObjReq);
     }
-
-    private void inuitMeasuredListView() {
-        activityListView = root.findViewById(R.id.measuredList);
-//        String endpoint = "getMeasuredRecordList";
-//        // Instantiate the RequestQueue.
-//        RequestQueue queue = Volley.newRequestQueue(this);
-//        String url = api + "/" + endpoint;
-//        Log.d("getAllActivityCategory", "Connecting url = " + url);
-//        List<String> list = new ArrayList<String>();
-//        // Request a string response from the provided URL.
-//
-//
-//        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        try {
-//                            JSONArray arr = new JSONArray(response);
-//                            list.add("Category");
-//                            for (int i = 0; i < arr.length(); i++) {
-//                                list.add(arr.getString(i));
-//                            }
-//                            Log.d("getAllActivityCategory", "Response body = " + response);
-//                            ArrayAdapter<String> categorySpinnerAdapter = new ArrayAdapter<String>(ScheduleActivity.this,
-//                                    android.R.layout.simple_spinner_dropdown_item, list);
-//                            categorySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                            categorySpinnerAdapter.notifyDataSetChanged();
-//                            Log.d("getAllActivityCategory", "Set adapter");
-//                            activityListView.setAdapter(categorySpinnerAdapter);
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                            Log.e("getAllActivityCategory", "JSONException = " + e.getMessage());
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.e("getAllActivityCategory", "Response body = " + error.toString());
-//            }
-//        });
-//
-//        // Add the request to the RequestQueue.
-//        queue.add(stringRequest);
-//
-//        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                Log.d("getAllActivityCategory", "onItemSelected: " + adapterView.getSelectedItem().toString());
-//                getCategorySelected = adapterView.getSelectedItem().toString();
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//                Log.d("getAllActivityCategory", "onNothingSelected: ");
-//            }
-//        });
-    }
-//        activityBtn = root.findViewById(R.id.stat_activity_btn_container);
-//        activityBtn.setOnClickListener(new View.OnClickListener(){
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(getActivity(), statistic_activity.class);
-//                startActivity(intent);
-//            }
-//
-//        });
-//        statisticViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-////                textView.setText(s);
-//            }
-//        });
-//        return root;
-//    }
 }

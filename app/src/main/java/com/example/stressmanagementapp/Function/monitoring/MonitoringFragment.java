@@ -1,34 +1,175 @@
 package com.example.stressmanagementapp.Function.monitoring;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.stressmanagementapp.Function.schedule.ScheduleActivity;
+import com.example.stressmanagementapp.Model.MeasuredResult;
 import com.example.stressmanagementapp.R;
+
+import org.json.JSONObject;
+
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import static io.realm.Realm.getApplicationContext;
 
 public class MonitoringFragment extends Fragment {
 
-    private MonitoringViewModel monitoringViewModel;
-
+    private Button monitorNowBtn,resetBtn;
+    private EditText monitoringCode;
+    private String apiPath;
+    private String userId,mobileID;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        monitoringViewModel =
-                new ViewModelProvider(this).get(MonitoringViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_monitoring_norecord, container, false);
-//        final TextView textView = root.findViewById(R.id.text_notifications);
-        monitoringViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-            }
-        });
+        View root = inflater.inflate(R.layout.fragment_monitoring_record, container, false);
+        SharedPreferences sharedPref = getContext().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        this.userId = sharedPref.getString("user_id", null);
+        this.mobileID = sharedPref.getString("mobile_id", null);
+        apiPath = getString(R.string.api_path);
+        initUI(root);
         return root;
     }
+
+    private void initUI(View root) {
+        monitoringCode = root.findViewById(R.id.monitoringCode);
+        monitorNowBtn = root.findViewById(R.id.monitorNowBtn);
+        resetBtn = root.findViewById(R.id.resetBtn);
+
+        monitorNowBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                verifyCode();
+
+            }
+        });
+
+        resetBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                byte[] array = new byte[4]; // length is bounded by 4
+                new Random().nextBytes(array);
+                String generatedString = new String(array, Charset.forName("UTF-8"));
+                initMonitoringRelationship(generatedString);
+            }
+        });
+    }
+
+    private void verifyCode() {
+
+        String code = monitoringCode.getText().toString();
+        String endpoint = "verifyCode";
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String url = apiPath + "/" + endpoint;
+        Log.d("verifyCode", "Connecting url = " + url);
+        List<String> list = new ArrayList<String>();
+        // Request a string response from the provided URL.
+        JSONObject jsonRequestBody = new JSONObject();
+
+        try {
+            jsonRequestBody.put("pairCode", code);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url, jsonRequestBody,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Log.e("verifyCode", "Response body = " + response.toString());
+                            if (response.getString("result").equals("false")) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                builder.setMessage("Wrong code, please try again")
+                                        .setCancelable(false)
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                //do things
+                                            }
+                                        });
+                                AlertDialog alert = builder.create();
+                                alert.show();
+                            } else {
+                                Intent intent = new Intent(getContext(), MonitoringActivity.class);
+                                intent.putExtra("targetID", response.getString("targetID"));
+                                startActivity(intent);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+
+
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("initMonitoringRelationship", "Response body = " + error.toString());
+            }
+        });
+    }
+
+    private void initMonitoringRelationship(String code) {
+        String endpoint = "initMonitoringRelationship";
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String url = apiPath + "/" + endpoint;
+        Log.d("initMonitoringRelationship", "Connecting url = " + url);
+        List<String> list = new ArrayList<String>();
+        // Request a string response from the provided URL.
+        JSONObject jsonRequestBody = new JSONObject();
+        try {
+            jsonRequestBody.put("targetID", userId);
+            jsonRequestBody.put("pairCode", code);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url, jsonRequestBody,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.e("initMonitoringRelationship", "Response body = " + response.toString());
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+//                        builder.setMessage("Regenerated code")
+//                                .setCancelable(false)
+//                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                                    public void onClick(DialogInterface dialog, int id) {
+//                                        //do things
+//                                    }
+//                                });
+//                        AlertDialog alert = builder.create();
+//                        alert.show();
+                    }
+
+
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("initMonitoringRelationship", "Response body = " + error.toString());
+            }
+        });
+    }
+
 }

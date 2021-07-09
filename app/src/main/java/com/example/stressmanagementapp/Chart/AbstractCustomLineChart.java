@@ -3,15 +3,12 @@ package com.example.stressmanagementapp.Chart;
 import android.graphics.Color;
 import android.graphics.Typeface;
 
-import com.example.stressmanagementapp.Model.Model;
-import com.example.stressmanagementapp.Model.PPG_Model;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 public abstract class AbstractCustomLineChart {
     public LineChart chart;
