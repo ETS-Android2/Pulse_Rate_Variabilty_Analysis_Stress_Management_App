@@ -310,13 +310,14 @@ public class ScheduleActivity extends AppCompatActivity {
                                     startMeasuringNow();
                                 }
                             }else{
-                                if (isStartNow == true) {
-                                    //start measure now, call measuring activity
-                                    startMeasuringNow();
-                                } else if (isStartNow == false) {
-                                    //Add to schedule collection
-                                    createNewSchedule();
-                                }
+                                startMeasuringNow();
+//                                if (isStartNow == true) {
+//                                    //start measure now, call measuring activity
+//                                    startMeasuringNow();
+//                                } else if (isStartNow == false) {
+//                                    //Add to schedule collection
+//                                    createNewSchedule();
+//                                }
                             }
 
 
@@ -478,7 +479,6 @@ public class ScheduleActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         try {
                             JSONArray arr = new JSONArray(response);
-                            categoryList.add("Category");
                             for (int i = 0; i < arr.length(); i++) {
                                 categoryList.add(arr.getString(i));
                             }

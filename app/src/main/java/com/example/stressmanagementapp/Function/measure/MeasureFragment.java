@@ -62,15 +62,16 @@ public class MeasureFragment extends Fragment {
         btn_quickMeasurement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), NewMeasuringActivity.class);
+                Intent intent = new Intent(getActivity(), ScheduleActivity.class);
                 startActivity(intent);
             }
         });
         btn_scheduleMeasureActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), ScheduleActivity.class);
-                startActivity(intent);
+                        Intent intent = new Intent(getActivity(), NewMeasuringActivity.class);
+                        intent.putExtra("isMeasureRestingData",true);
+                        startActivityForResult(intent,-1);
             }
         });
         btn_viewScheduledMeasureActivity.setOnClickListener(new View.OnClickListener() {
@@ -80,26 +81,27 @@ public class MeasureFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setMessage("You don't have Resting HR and PPI record for your profile, measure now?")
-                .setCancelable(false)
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                })
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        //do things
-                        Intent intent = new Intent(getActivity(), NewMeasuringActivity.class);
-                        intent.putExtra("isMeasureRestingData",true);
-                        startActivityForResult(intent,-1);
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
-
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+//        builder.setMessage("You don't have Resting HR and PPI record for your profile, measure now?")
+//                .setCancelable(false)
+//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                    }
+//                })
+//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        //do things
+//                        Intent intent = new Intent(getActivity(), NewMeasuringActivity.class);
+//                        intent.putExtra("isMeasureRestingData",true);
+//                        startActivityForResult(intent,-1);
+//                    }
+//                });
+//        AlertDialog alert = builder.create();
+//        alert.show();
+//
+//        return root;
         return root;
     }
     public void createUserIfNotExist(){

@@ -34,7 +34,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="4ff22a5bfff3412b"
             android:textSize="30sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,13 +41,14 @@
 
         <Button
             android:id="@+id/resetBtn"
-            android:layout_width="285dp"
-            android:layout_height="81dp"
+            android:layout_width="321dp"
+            android:layout_height="80dp"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="32dp"
             android:background="#FFD6BBBB"
             android:text="Disconnect all monitoring relationship and regenerate code"
-            android:textSize="14sp"
+
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.506"

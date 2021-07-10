@@ -72,18 +72,18 @@ public class MonitoringFragment extends Fragment {
         resetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+                StringBuilder sb = new StringBuilder(20);
+                Random random = new Random();
+                for (int i = 0; i < 4; i++) {
+                    char c = chars[random.nextInt(chars.length)];
+                    sb.append(c);
+                }
+                String uuid = sb.toString();
+                initMonitoringRelationship(uuid);
             }
         });
-        char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-        StringBuilder sb = new StringBuilder(20);
-        Random random = new Random();
-        for (int i = 0; i < 4; i++) {
-            char c = chars[random.nextInt(chars.length)];
-            sb.append(c);
-        }
-        String uuid = sb.toString();
-        initMonitoringRelationship(uuid);
+
     }
 
     private void verifyCode() {
@@ -110,7 +110,7 @@ public class MonitoringFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            Log.e("verifyCode", "Response body = " + response.toString());
+                            Log.d("verifyCode", "Response body = " + response.toString());
                             if (response.getString("result").equals("false")) {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                                 builder.setMessage("Wrong code, please try again")
@@ -124,7 +124,7 @@ public class MonitoringFragment extends Fragment {
                                 alert.show();
                             } else {
                                 Intent intent = new Intent(getContext(), MonitoringActivity.class);
-                                intent.putExtra("targetID", response.getString("targetID"));
+                                intent.putExtra("targetID", response.getString("result"));
                                 intent.putExtra("pairCode", code);
                                 startActivity(intent);
                             }

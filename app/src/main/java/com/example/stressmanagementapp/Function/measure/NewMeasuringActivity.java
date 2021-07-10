@@ -102,6 +102,7 @@ public class NewMeasuringActivity extends AppCompatActivity {
     private float timeCountDown = 60;
     private TextView progress_tv, measuredSampleNo, lastHRValue, lastAvgPPI, lastMaxPPI, lastMinPPI, lastSampleTime, measureStartAt, measureEndDate, avgStressLevelValue, stressLevelLabel2,lastMaxHRValue,lastMinHRValue,maxStressLevelValue,minStressLevelValue,minStressLevelLabel,maxStressLevelLabel;
     ;
+    volatile boolean shutdown = false;
     private int measuredSample = 0;
     private ListView measuredResultList;
     private List<MeasuredResult> measuredResultStringList;
@@ -141,7 +142,7 @@ public class NewMeasuringActivity extends AppCompatActivity {
 
             maxStressLevelLabel.setVisibility(View.INVISIBLE);
             stressLevelLabel2.setVisibility(View.INVISIBLE);
-
+            minStressLevelLabel.setVisibility(View.INVISIBLE);
 
 
             avgStressLevelValue.setVisibility(View.INVISIBLE);
@@ -150,6 +151,12 @@ public class NewMeasuringActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        shutdown=true;
     }
 
     private void initMeasureResult() {
@@ -276,7 +283,7 @@ public class NewMeasuringActivity extends AppCompatActivity {
                             minStressLevelValue.setText(String.format("%.2f",minStress)+"%");
 
                             String stressValueInLastMinute = response.getString("lastRecordStressValue");
-                            Log.d(TAG, String.format("onResponse: avgStress=%s, maxStress=%s, minStress=%s,stressValueInLastMinute=%s",avgStress,maxStress,minStress,stressValueInLastMinute));
+                            Log.d(TAG, String.format("onResponse: avgStress=%s, maxStress=%s, minStress=%s,stressValueInLastMinute=%s",avgStress,maxStress,minStress,stressValueInLastMinute)+" "+isMeasureRestingData);
 
                             result.setStressValue(stressValueInLastMinute);
 
@@ -287,20 +294,7 @@ public class NewMeasuringActivity extends AppCompatActivity {
                             measuredResultStringList.add(result);
                             MeasureResultListAdapter customCountryList = new MeasureResultListAdapter(NewMeasuringActivity.this, measuredResultStringList);
                             measuredResultList.setAdapter(customCountryList);
-                            if (isMeasureRestingData == true) {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(NewMeasuringActivity.this);
-                                builder.setMessage(String.format("Resting data:\nAVG HR = %s\n+AVG PPI = %s", (int) measuredResultStringList.get(0).getAvg_overall_bpm(), (int) measuredResultStringList.get(0).getAvg_overall_ppi()))
-                                        .setCancelable(false)
-                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int id) {
-                                                //do things
-                                                setResult(RESULT_OK, intent);
-                                                finish();
-                                            }
-                                        });
-                                AlertDialog alert = builder.create();
-                                alert.show();
-                            }
+
                         }catch (Exception e){
                             e.printStackTrace();
                         }
@@ -331,7 +325,7 @@ public class NewMeasuringActivity extends AppCompatActivity {
                         Gson gson = new GsonBuilder().create();
                         MeasuredResult result = gson.fromJson(data.toString(), MeasuredResult.class);
 
-
+                        Log.d("InsertPPGSignalToWebSocket", "isMeasureRestingData = " + isMeasureRestingData);
                         Log.d("InsertPPGSignalToWebSocket", "result = " + result.toString());
                         if (isMeasureRestingData == true) {
                             pushNewRestingData_To_Profile(data);
@@ -440,6 +434,7 @@ public class NewMeasuringActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
+                    Log.d(TAG, "onClick: stop button");
                     countTime.cancel();
                     timer.cancel();
                     if (isMeasureRestingData == false) {
@@ -605,7 +600,7 @@ public class NewMeasuringActivity extends AppCompatActivity {
     private void pushNewMeasuredResult(JSONObject jsonRequestBody,MeasuredResult result) {
         String endpoint = "pushNewMeasuredResult_To_MeasuredRecord";
         // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(this);
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         String url = apiPath + "/" + endpoint;
         Log.d("pushNewPPGSignalRecordTo_MeasuredRecord", "Connecting url = " + url);
         List<String> list = new ArrayList<String>();
@@ -650,9 +645,24 @@ public class NewMeasuringActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("pushNewRestingData_To_Profile", "onResponse: " + response.toString());
+                        if (isMeasureRestingData == true) {
+//                            PPG_DataThread.getRunnable()
+                            AlertDialog.Builder builder = new AlertDialog.Builder(NewMeasuringActivity.this);
+                            builder.setMessage("Measured Resting Data.")
+                                    .setCancelable(false)
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            //do things
+                                            shutdown=true;
+                                            stopReceivePPGThread=true;
+                                            setResult(RESULT_OK, intent);
+                                            finish();
+                                        }
+                                    });
+                            AlertDialog alert = builder.create();
+                            alert.show();
+                        }
                     }
-
-
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -667,88 +677,91 @@ public class NewMeasuringActivity extends AppCompatActivity {
     class InsertPPGSignalToMongoDB extends TimerTask {
         public void run() {
             lock.lock();
-            try {
-                Log.d("InsertPPGSignalToMongoDB", " JSONArray size = " + tempPPGSignal.length() + "\n" + tempPPGSignal.toString());
-                String json = new Gson().toJson(tempPPGSignal);
-                JSONObject jsonRequestBody = new JSONObject();
-                jsonRequestBody.put("ppgSignalSet", tempPPGSignal);
-                if (tempPPGSignal.length() != 0) {
-                    //pushNewPPGRecordInMinute(jsonRequestBody);
-                    tempPPGSignal = new JSONArray();
+            if(!shutdown) {
+                try {
+                    Log.d("InsertPPGSignalToMongoDB", " JSONArray size = " + tempPPGSignal.length() + "\n" + tempPPGSignal.toString());
+                    String json = new Gson().toJson(tempPPGSignal);
+                    JSONObject jsonRequestBody = new JSONObject();
+                    jsonRequestBody.put("ppgSignalSet", tempPPGSignal);
+                    if (tempPPGSignal.length() != 0) {
+                        //pushNewPPGRecordInMinute(jsonRequestBody);
+                        tempPPGSignal = new JSONArray();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("InsertPPGSignalToMongoDB", "run:  " + e.getMessage());
+                } finally {
+                    lock.unlock();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e("InsertPPGSignalToMongoDB", "run:  " + e.getMessage());
-            } finally {
-                lock.unlock();
+                Log.d("InsertPPGSignalToMongoDB", "Insert JSONArray to mongodb");
             }
-            Log.d("InsertPPGSignalToMongoDB", "Insert JSONArray to mongodb");
         }
     }
 
     class InsertPPGSignalToWebSocket extends TimerTask {
         public void run() {
             lock.lock();
-            if (loadingDialog.isDisplaying())
-                loadingDialog.dismissDialog();
-            try {
-                Log.d("InsertPPGSignalToWebSocket", " JSONArray size = " + tempPPGSignal.length() + "\n" + tempPPGSignal.toString());
-
-                String json = new Gson().toJson(tempPPGSignal);
-                JSONObject jsonRequestBody = new JSONObject();
-//                jsonRequestBody.put("ppgSignalSet", tempPPGSignal);
-                //pushNewPPGRecordInMinute(jsonRequestBody);
+            if (!shutdown) {
+                if (loadingDialog.isDisplaying())
+                    loadingDialog.dismissDialog();
                 try {
-                    if (tempPPGSignal.length() > 5000) {
-                        Log.d("InsertPPGSignalToWebSocket", "Emit " + tempPPGSignal.length());
-                        mSocket.emit("PPG_Signal", tempPPGSignal.toString());
-                    }
+                    Log.d("InsertPPGSignalToWebSocket", " JSONArray size = " + tempPPGSignal.length() + "\n" + tempPPGSignal.toString());
 
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    System.out.println("ERROR during emitting message");
+                    String json = new Gson().toJson(tempPPGSignal);
+                    JSONObject jsonRequestBody = new JSONObject();
+//                jsonRequestBody.put("ppgSignalSet", tempPPGSignal);
+                    //pushNewPPGRecordInMinute(jsonRequestBody);
+                    try {
+                        if (tempPPGSignal.length() > 5000) {
+                            Log.d("InsertPPGSignalToWebSocket", "Emit " + tempPPGSignal.length());
+                            mSocket.emit("PPG_Signal", tempPPGSignal.toString());
+                        }
+
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        System.out.println("ERROR during emitting message");
+                    }
+                    tempPPGSignal = new JSONArray();
+                    NewMeasuringActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            countTime = new CountDownTimer(60000, 1000) {
+
+                                public void onTick(long millisUntilFinished) {
+                                    float second = millisUntilFinished / 1000;
+                                    timeCountDown = 60 - second;
+                                    float percentage = timeCountDown / 60 * 100;
+                                    progressBar.setProgress((int) percentage);
+                                    progress_tv.setText(String.valueOf((int) percentage) + "%");
+                                    if (isMeasureRestingData == true && measuredSample == 1) {
+                                        //measure resting data
+                                        countTime.onFinish();
+                                    }
+                                }
+
+                                public void onFinish() {
+                                    if ((isMeasureRestingData == true && measuredSample != 1) || isMeasureRestingData == false) {
+                                        measuredSample++;
+                                        measuredSampleNo.setText(String.valueOf(measuredSample));
+                                    }
+                                    progress_tv.setText
+                                            ("0%");
+                                }
+
+                            };
+                            countTime.start();
+                        }
+                    });
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("InsertPPGSignalToWebSocket", "run:  " + e.getMessage());
+                } finally {
+                    lock.unlock();
                 }
-                tempPPGSignal = new JSONArray();
-                NewMeasuringActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        countTime = new CountDownTimer(60000, 1000) {
-
-                            public void onTick(long millisUntilFinished) {
-                                float second = millisUntilFinished / 1000;
-                                timeCountDown = 60 - second;
-                                float percentage = timeCountDown / 60 * 100;
-                                progressBar.setProgress((int) percentage);
-                                progress_tv.setText(String.valueOf((int) percentage) + "%");
-                                if (isMeasureRestingData == true && measuredSample == 1) {
-                                    //measure resting data
-                                    countTime.onFinish();
-                                    stopMeasureBtn.callOnClick();
-                                }
-                            }
-
-                            public void onFinish() {
-                                if ((isMeasureRestingData == true && measuredSample != 1) || isMeasureRestingData == false) {
-                                    measuredSample++;
-                                    measuredSampleNo.setText(String.valueOf(measuredSample));
-                                }
-                                progress_tv.setText("0%");
-                            }
-
-                        };
-                        countTime.start();
-                    }
-                });
-
-
-            } catch (
-                    Exception e) {
-                e.printStackTrace();
-                Log.e("InsertPPGSignalToWebSocket", "run:  " + e.getMessage());
-            } finally {
-                lock.unlock();
+                Log.d("InsertPPGSignalToWebSocket", "Insert JSONArray to websocket");
             }
-            Log.d("InsertPPGSignalToWebSocket", "Insert JSONArray to websocket");
         }
 
     }
@@ -778,26 +791,29 @@ public class NewMeasuringActivity extends AppCompatActivity {
         getPPGDataRunnable = (new Runnable() {
             @Override
             public void run() {
-                if (stopReceivePPGThread == false && ppgDisposable == null) {
-                    ppgDisposable = api.requestPpgSettings(DEVICE_ID).toFlowable().flatMap((Function<PolarSensorSetting, Publisher<PolarOhrPPGData>>) polarPPGSettings -> api.startOhrPPGStreaming(DEVICE_ID, polarPPGSettings.maxSettings())).subscribe(
-                            polarOhrPPGData -> {
-                                for (PolarOhrPPGData.PolarOhrPPGSample sample : polarOhrPPGData.samples) {
-                                    SimpleDateFormat dft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-                                    Date currentTime = new Date(System.currentTimeMillis());
-                                    ppgModel = new PPG_Model(sample, dft.format(currentTime), userId, measureId);
-                                    addPPGSignalToThisMinute(ppgModel.toJsonObject());
-                                    //addPPGSignalToThisMinute(ppgModel.toJsonObject());
-                                    //Log.d(TAG,"Detect ppgModel: "+ppgModel.toJsonObject().toString());
-                                }
-                                if (receiveFirstPPG == true && loadingDialog.getLoadingDialog().isShowing() == true)
-                                    loadingDialog.dismissDialog();
-                            },
+                    if (stopReceivePPGThread == false && ppgDisposable == null) {
+                        ppgDisposable = api.requestPpgSettings(DEVICE_ID).toFlowable().flatMap((Function<PolarSensorSetting, Publisher<PolarOhrPPGData>>) polarPPGSettings -> api.startOhrPPGStreaming(DEVICE_ID, polarPPGSettings.maxSettings())).subscribe(
+                                polarOhrPPGData -> {
+                                    for (PolarOhrPPGData.PolarOhrPPGSample sample : polarOhrPPGData.samples) {
+                                        if(stopReceivePPGThread == false) {
+                                            SimpleDateFormat dft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+                                            Date currentTime = new Date(System.currentTimeMillis());
+                                            ppgModel = new PPG_Model(sample, dft.format(currentTime), userId, measureId);
+                                            addPPGSignalToThisMinute(ppgModel.toJsonObject());
+                                        }
+                                        //addPPGSignalToThisMinute(ppgModel.toJsonObject());
+                                        //Log.d(TAG,"Detect ppgModel: "+ppgModel.toJsonObject().toString());
+                                    }
+                                    if (receiveFirstPPG == true && loadingDialog.getLoadingDialog().isShowing() == true)
+                                        loadingDialog.dismissDialog();
+                                },
 
-                            throwable -> Log.e(TAG, "getPPGDataRunnable() " + throwable.getMessage()),
-                            () -> Log.d(TAG, "complete")
-                    );
+                                throwable -> Log.e(TAG, "getPPGDataRunnable() " + throwable.getMessage()),
+                                () -> Log.d(TAG, "complete")
+                        );
+                    }
                 }
-            }
+
         });
         getPPGData_OnUIThread = new Thread(new Runnable() {
             @Override
@@ -808,7 +824,12 @@ public class NewMeasuringActivity extends AppCompatActivity {
                     runOnUiThread(getPPGDataRunnable);
 
                     try {
-                        Thread.sleep(30);
+                        if(!shutdown)
+                            Thread.sleep(30);
+                        else{
+                            Thread.interrupted();
+                            break;
+                        }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
