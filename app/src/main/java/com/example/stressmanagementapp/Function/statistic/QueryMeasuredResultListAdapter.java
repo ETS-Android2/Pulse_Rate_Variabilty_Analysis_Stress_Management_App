@@ -49,7 +49,7 @@ public class QueryMeasuredResultListAdapter extends ArrayAdapter {
 
         TextView avgHR = (TextView) row.findViewById(R.id.avgHR);
         TextView minHR = (TextView) row.findViewById(R.id.minHR);
-        TextView maxHR = (TextView) row.findViewById(R.id.avgPPI);
+        TextView maxHR = (TextView) row.findViewById(R.id.maxHR);
 
         TextView avgPPI = (TextView) row.findViewById(R.id.avgPPI);
         TextView minPPI = (TextView) row.findViewById(R.id.minPPI);

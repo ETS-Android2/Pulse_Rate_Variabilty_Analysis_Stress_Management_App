@@ -173,6 +173,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:text="Will end at:"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="@+id/measureStartAt"
             app:layout_constraintTop_toBottomOf="@+id/measureStartAt" />
 
@@ -206,6 +207,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="NA"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="@+id/willEndLabel"
             app:layout_constraintTop_toBottomOf="@+id/willEndLabel" />
 
