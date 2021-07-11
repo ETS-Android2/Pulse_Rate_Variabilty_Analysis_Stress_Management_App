@@ -32,8 +32,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import android.provider.Settings.Secure;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -42,13 +40,10 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.stressmanagementapp.Function.MainActivity;
-import com.example.stressmanagementapp.Function.measure.MeasureFragment;
-import com.example.stressmanagementapp.Function.measure.MeasuringActivity;
 import com.example.stressmanagementapp.Function.measure.NewMeasuringActivity;
 import com.example.stressmanagementapp.R;
 import com.example.stressmanagementapp.Util.DateUtil;
 
-import org.bson.BsonObjectId;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -23,9 +23,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Function.measure.MeasuringActivity"
-            android:parentActivityName=".Function.MainActivity" />
-        <activity
             android:name=".Function.measure.NewMeasuringActivity"
             android:parentActivityName=".Function.MainActivity" />
         <activity

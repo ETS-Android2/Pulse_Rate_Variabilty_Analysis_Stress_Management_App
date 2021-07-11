@@ -45,12 +45,9 @@ import static io.realm.Realm.getApplicationContext;
 
 public class MeasureFragment extends Fragment {
 
-    private MeasureViewModel settingViewModel;
     private String api;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        settingViewModel =
-                new ViewModelProvider(this).get(MeasureViewModel.class);
         View root = inflater.inflate(R.layout.fragment_measure, container, false);
         final ImageButton btn_quickMeasurement = root.findViewById(R.id.quickMeasurmentBtn);
         final ImageButton btn_scheduleMeasureActivity = root.findViewById(R.id.scheduleMeasurmentBtn);

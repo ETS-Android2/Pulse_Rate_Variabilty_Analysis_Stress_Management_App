@@ -74,7 +74,7 @@ public class NewMeasuringActivity extends AppCompatActivity {
     private AbstractCustomLineChart ppgLineChart, hrLineChart;
     private Intent intent;
     private String userId, measureId;
-    public final static String TAG = MeasuringActivity.class.getSimpleName();
+    public final static String TAG = NewMeasuringActivity.class.getSimpleName();
 
     //Sensor API related
     private PolarBleApi api;
