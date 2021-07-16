@@ -70,19 +70,49 @@
         <item>AVG Stress Level(ASC)</item>
         <item>AVG Stress Level(DSC)</item>
 
-        <item>Lowest BPM(ASC)</item>
-        <item>Lowest BPM(DSC)</item>
-        <item>Lowest PPI(ASC)</item>
-        <item>Lowest PPI(DSC)</item>
-        <item>Lowest Stress Level(ASC)</item>
-        <item>Lowest Stress Level(DSC)</item>
+        <item>L. BPM(ASC)</item>
+        <item>L. BPM(DSC)</item>
+        <item>L. PPI(ASC)</item>
+        <item>L. PPI(DSC)</item>
+        <item>L. Stress Level(ASC)</item>
+        <item>L. Stress Level(DSC)</item>
 
-        <item>Highest BPM(ASC)</item>
-        <item>Highest BPM(DSC)</item>
-        <item>Highest PPI(ASC)</item>
-        <item>Highest PPI(DSC)</item>
-        <item>Highest Stress Level(ASC)</item>
-        <item>Highest Stress Level(DSC)</item>
+        <item>H. BPM(ASC)</item>
+        <item>H. BPM(DSC)</item>
+        <item>H. PPI(ASC)</item>
+        <item>H. PPI(DSC)</item>
+        <item>H. Stress Level(ASC)</item>
+        <item>H. Stress Level(DSC)</item>
+    </string-array>
+
+    <string-array name="measuredRecordSortByWithoutCategory">
+        <item>Date (DSC)</item>
+        <item>Date (ASC)</item>
+
+        <item>Activity Name(ASC)</item>
+        <item>Activity Name(DSC)</item>
+
+
+        <item>AVG BPM(ASC)</item>
+        <item>AVG BPM(DSC)</item>
+        <item>AVG PPI(ASC)</item>
+        <item>AVG PPI(DSC)</item>
+        <item>AVG Stress Level(ASC)</item>
+        <item>AVG Stress Level(DSC)</item>
+
+        <item>L. BPM(ASC)</item>
+        <item>L. BPM(DSC)</item>
+        <item>L. PPI(ASC)</item>
+        <item>L. PPI(DSC)</item>
+        <item>L. Stress Level(ASC)</item>
+        <item>L. Stress Level(DSC)</item>
+
+        <item>H. BPM(ASC)</item>
+        <item>H. BPM(DSC)</item>
+        <item>H. PPI(ASC)</item>
+        <item>H. PPI(DSC)</item>
+        <item>H. Stress Level(ASC)</item>
+        <item>H. Stress Level(DSC)</item>
     </string-array>
 
     <!--   end schedule realtime measuring page-->

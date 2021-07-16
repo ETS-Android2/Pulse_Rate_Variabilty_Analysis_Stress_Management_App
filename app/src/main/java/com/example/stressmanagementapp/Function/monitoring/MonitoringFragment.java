@@ -126,6 +126,7 @@ public class MonitoringFragment extends Fragment {
                                 Intent intent = new Intent(getContext(), MonitoringActivity.class);
                                 intent.putExtra("targetID", response.getString("result"));
                                 intent.putExtra("pairCode", code);
+                                intent.putExtra("userId",userId);
                                 startActivity(intent);
                             }
                         }catch (Exception e){
